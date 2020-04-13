@@ -1,5 +1,9 @@
 package com.twu.biblioteca.Controllers;
 
+import com.twu.biblioteca.Models.Book;
+import com.twu.biblioteca.Repositories.BookRepository;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -20,6 +24,14 @@ public class MenuController {
             String userAnswer = in.nextLine();
             isAnswerValid = CheckingUserInput(userAnswer);
         }
+
+        ArrayList<Book> books = GetListOfBooks();
+        System.out.println("** List of books **\n");
+        for(Book book: books){
+            System.out.println("Book " + book.getId());
+            System.out.println("Title: " + book.getTitle());
+        }
+
     }
 
     public ArrayList<String> AvailableOptions(){
@@ -44,5 +56,12 @@ public class MenuController {
         String errorMessage = "\n-- You need to choose between the available options, please try again! --\n";
 
         return errorMessage;
+    }
+
+    public ArrayList<Book> GetListOfBooks(){
+        BookRepository listOfBooks = new BookRepository();
+        ArrayList<Book> books = listOfBooks.GetBooks();
+
+        return books;
     }
 }

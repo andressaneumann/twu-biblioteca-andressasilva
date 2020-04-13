@@ -1,9 +1,11 @@
 package com.twu.biblioteca;
 
 import com.twu.biblioteca.Controllers.MenuController;
+import com.twu.biblioteca.Models.Book;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 
@@ -43,6 +45,13 @@ public class MenuControllerTests {
         String errorMessage = menuController.GettingErrorMessageWhenInvalidOptionChosen();
 
         Assert.assertEquals(errorMessage, "\n-- You need to choose between the available options, please try again! --");
+    }
+
+    @Test
+    public void GetListOfBooks_WhenCalled_ReturnsAValidList(){
+        ArrayList<Book> listOfBooks = menuController.GetListOfBooks();
+
+        Assert.assertEquals(listOfBooks.size(), 5);
     }
 
 }
