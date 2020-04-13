@@ -28,8 +28,10 @@ public class MenuController {
         ArrayList<Book> books = GetListOfBooks();
         System.out.println("** List of books **\n");
         for(Book book: books){
-            System.out.println("Book " + book.getId());
+            System.out.println("\nBook " + book.getId());
             System.out.println("Title: " + book.getTitle());
+            System.out.println("Author: " + book.getAuthor());
+            System.out.println("Publication Year: " + book.getYearReleased());
         }
 
     }
