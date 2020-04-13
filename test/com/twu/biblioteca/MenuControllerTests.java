@@ -37,6 +37,14 @@ public class MenuControllerTests {
         Assert.assertEquals(response, false);
     }
 
+    @Test
+    public void GettingErrorMessageWhenInvalidOptionChosen_WhenCalled_ReturnsMessage(){
+
+        String errorMessage = menuController.GettingErrorMessageWhenInvalidOptionChosen();
+
+        Assert.assertEquals(errorMessage, "\n-- You need to choose between the available options, please try again! --");
+    }
+
 }
 
 
