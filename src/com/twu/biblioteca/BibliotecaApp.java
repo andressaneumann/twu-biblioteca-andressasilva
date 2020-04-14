@@ -7,7 +7,9 @@ public class BibliotecaApp {
 
     public static void main(String[] args) {
 
-        System.out.println("Welcome to Biblioteca! Your one-stop-shop for great book titles in Bangalore!");
+        Welcome welcome = new Welcome();
+        System.out.println(welcome.message());
+
         MenuController bibliotecaMenu = new MenuController();
 
         bibliotecaMenu.Menu();

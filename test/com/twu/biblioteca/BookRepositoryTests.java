@@ -8,12 +8,17 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThat;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+
 public class BookRepositoryTests {
 
     BookRepository bookRepository;
 
     @Before
-    public void setUp() throws Exception{
+    public void setUp() {
         bookRepository = new BookRepository();
     }
 
@@ -23,7 +28,7 @@ public class BookRepositoryTests {
         ArrayList<Book> emptyBookList = new ArrayList<Book>();
         ArrayList<Book> allBooks = bookRepository.GetBooks();
 
-        Assert.assertNotEquals(emptyBookList, allBooks);
+        assertNotEquals(emptyBookList, allBooks);
     }
 
 }

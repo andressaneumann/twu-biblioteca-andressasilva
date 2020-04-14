@@ -9,16 +9,17 @@ import java.util.Scanner;
 
 public class MenuController {
 
+    ArrayList<String> availableOptions;
     Scanner in = new Scanner(System.in);
     Boolean isAnswerValid = false;
 
-    public void Menu(){
+    public void Menu() {
 
-        while(!isAnswerValid){
+        while (!isAnswerValid) {
             System.out.println("Please choose between the available options and press the respective number: ");
             ArrayList<String> availableOptions = AvailableOptions();
 
-            for(int i = 0; i < availableOptions.size(); i++)
+            for (int i = 0; i < availableOptions.size(); i++)
                 System.out.println(availableOptions.get(i));
 
             String userAnswer = in.nextLine();
@@ -26,8 +27,8 @@ public class MenuController {
         }
 
         ArrayList<Book> books = GetListOfBooks();
-        System.out.println("** List of books **\n");
-        for(Book book: books){
+        System.out.println("\n** List of books **");
+        for (Book book : books) {
             System.out.println("\nBook " + book.getId());
             System.out.println("Title: " + book.getTitle());
             System.out.println("Author: " + book.getAuthor());
@@ -36,31 +37,32 @@ public class MenuController {
 
     }
 
-    public ArrayList<String> AvailableOptions(){
+    public ArrayList<String> AvailableOptions() {
 
-        ArrayList<String> availableOptions = new ArrayList<String>();
+        availableOptions = new ArrayList<String>();
         availableOptions.add("1. List of Books");
+
 
         return availableOptions;
     }
 
-    public Boolean CheckingUserInput(String userAnswer){
+    public Boolean CheckingUserInput(String userAnswer) {
 
-        if(userAnswer.equals("1"))
+        if (userAnswer.equals("1"))
             return true;
-        else{
+        else {
             System.out.println(GettingErrorMessageWhenInvalidOptionChosen());
             return false;
         }
     }
 
-    public String GettingErrorMessageWhenInvalidOptionChosen(){
+    public String GettingErrorMessageWhenInvalidOptionChosen() {
         String errorMessage = "\n-- You need to choose between the available options, please try again! --\n";
 
         return errorMessage;
     }
 
-    public ArrayList<Book> GetListOfBooks(){
+    public ArrayList<Book> GetListOfBooks() {
         BookRepository listOfBooks = new BookRepository();
         ArrayList<Book> books = listOfBooks.GetBooks();
 
