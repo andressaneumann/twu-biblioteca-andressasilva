@@ -38,6 +38,7 @@ public class MenuController {
 
         availableOptions = new ArrayList<String>();
         availableOptions.add("1. List books");
+        availableOptions.add("4 - Exit program");
 
         return availableOptions;
     }
@@ -47,6 +48,7 @@ public class MenuController {
         ArrayList<String> optionsCodes = new ArrayList<String>(){
             {
                 add("1");
+                add ("4");
             } };
 
         if(optionsCodes.contains(userAnswer))
@@ -83,6 +85,10 @@ public class MenuController {
                     System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
                 }
                 break;
+            case 4:
+                programIsRunning = false;
+                System.out.println("Exiting the program...");
+                System.exit(0);
             default:
                 System.out.println(GettingErrorMessageWhenInvalidOptionChosen());
         }
