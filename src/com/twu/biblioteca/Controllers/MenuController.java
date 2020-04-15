@@ -1,8 +1,6 @@
 package com.twu.biblioteca.Controllers;
 
-import com.twu.biblioteca.Interfaces.Option;
 import com.twu.biblioteca.Models.Book;
-import com.twu.biblioteca.Models.ListOfBooksOption;
 import com.twu.biblioteca.Repositories.BookRepository;
 
 import java.lang.reflect.Array;
@@ -12,19 +10,18 @@ import java.util.Scanner;
 public class MenuController {
 
     Boolean programIsRunning = true;
-    ArrayList<Option> availableOptions;
+    ArrayList<String> availableOptions;
     Scanner in = new Scanner(System.in);
     Boolean isAnswerValid = false;
-    ListOfBooksOption booksOption = new ListOfBooksOption();
 
     public void Main() {
 
         while (programIsRunning) {
             System.out.println("\nPlease choose between the available options and press the respective number: ");
-            ArrayList<Option> availableOptions = availableOptions();
+            ArrayList<String> availableOptions = availableOptions();
 
             for (int i = 0; i < availableOptions.size(); i++)
-                System.out.println(i+1 + " - " + availableOptions.get(i).showOptionName());
+                System.out.println(availableOptions.get(i));
 
             String userAnswer = in.nextLine();
             isAnswerValid = checkingUserInput(userAnswer);
@@ -37,10 +34,10 @@ public class MenuController {
 
     }
 
-    public ArrayList<Option> availableOptions() {
+    public ArrayList<String> availableOptions() {
 
-        availableOptions = new ArrayList<Option>();
-        availableOptions.add(booksOption);
+        availableOptions = new ArrayList<String>();
+        availableOptions.add("1. List books");
 
         return availableOptions;
     }

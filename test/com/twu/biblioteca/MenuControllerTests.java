@@ -1,9 +1,7 @@
 package com.twu.biblioteca;
 
 import com.twu.biblioteca.Controllers.MenuController;
-import com.twu.biblioteca.Interfaces.Option;
 import com.twu.biblioteca.Models.Book;
-import com.twu.biblioteca.Models.ListOfBooksOption;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +23,7 @@ public class MenuControllerTests {
 
     @Test
     public void availableOptionsTest(){
-        ArrayList<Option> availableOptions  = menuController.availableOptions();
+        ArrayList<String> availableOptions  = menuController.availableOptions();
 
         assertThat(availableOptions.isEmpty(), is(equalTo(false)));
     }
