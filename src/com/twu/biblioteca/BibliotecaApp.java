@@ -12,6 +12,6 @@ public class BibliotecaApp {
 
         MenuController bibliotecaMenu = new MenuController();
 
-        bibliotecaMenu.Menu();
+        bibliotecaMenu.Main();
     }
 }

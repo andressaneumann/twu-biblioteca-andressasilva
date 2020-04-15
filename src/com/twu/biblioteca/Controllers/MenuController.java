@@ -1,6 +1,8 @@
 package com.twu.biblioteca.Controllers;
 
+import com.twu.biblioteca.Interfaces.Option;
 import com.twu.biblioteca.Models.Book;
+import com.twu.biblioteca.Models.ListOfBooksOption;
 import com.twu.biblioteca.Repositories.BookRepository;
 
 import java.lang.reflect.Array;
@@ -9,39 +11,36 @@ import java.util.Scanner;
 
 public class MenuController {
 
-    ArrayList<String> availableOptions;
+    ArrayList<Option> availableOptions;
     Scanner in = new Scanner(System.in);
     Boolean isAnswerValid = false;
+    ListOfBooksOption booksOption = new ListOfBooksOption();
 
-    public void Menu() {
+    public void Main() {
 
         while (!isAnswerValid) {
             System.out.println("Please choose between the available options and press the respective number: ");
-            ArrayList<String> availableOptions = AvailableOptions();
+            ArrayList<Option> availableOptions = AvailableOptions();
 
             for (int i = 0; i < availableOptions.size(); i++)
-                System.out.println(availableOptions.get(i));
+                System.out.println(i+1 + " - " + availableOptions.get(i).showOptionName());
 
             String userAnswer = in.nextLine();
             isAnswerValid = CheckingUserInput(userAnswer);
         }
 
-        ArrayList<Book> books = GetListOfBooks();
+        ArrayList<Book> books = booksOption.getBooks();
         System.out.println("\n** List of books **");
         for (Book book : books) {
-            System.out.println("\nBook " + book.getId());
-            System.out.println("Title: " + book.getTitle());
-            System.out.println("Author: " + book.getAuthor());
-            System.out.println("Publication Year: " + book.getYearReleased());
+            System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
         }
 
     }
 
-    public ArrayList<String> AvailableOptions() {
+    public ArrayList<Option> AvailableOptions() {
 
-        availableOptions = new ArrayList<String>();
-        availableOptions.add("1. List of Books");
-
+        availableOptions = new ArrayList<Option>();
+        availableOptions.add(booksOption);
 
         return availableOptions;
     }
@@ -62,10 +61,4 @@ public class MenuController {
         return errorMessage;
     }
 
-    public ArrayList<Book> GetListOfBooks() {
-        BookRepository listOfBooks = new BookRepository();
-        ArrayList<Book> books = listOfBooks.GetBooks();
-
-        return books;
-    }
 }

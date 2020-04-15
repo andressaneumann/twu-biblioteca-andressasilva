@@ -18,7 +18,8 @@ public class WelcomeTests {
 
     @Test
     public void WelcomeMessage(){
-        assertThat(welcomeObj.message(), is(equalTo("Welcome to Biblioteca! Your one-stop-shop for great book titles in Bangalore!")));
+        String welcomeMessage = "Welcome to Biblioteca! Your one-stop-shop for great book titles in Bangalore!";
+        assertThat(welcomeObj.message(), is(equalTo(welcomeMessage)));
     }
 
 }

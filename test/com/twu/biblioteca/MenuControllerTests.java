@@ -1,7 +1,9 @@
 package com.twu.biblioteca;
 
 import com.twu.biblioteca.Controllers.MenuController;
+import com.twu.biblioteca.Interfaces.Option;
 import com.twu.biblioteca.Models.Book;
+import com.twu.biblioteca.Models.ListOfBooksOption;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,11 +24,10 @@ public class MenuControllerTests {
     }
 
     @Test
-    public void AvailableOptions_FirstOption_ListOfBooks(){
-        ArrayList<String> availableOptions  = menuController.AvailableOptions();
-        String optionOne = "1. List of Books";
+    public void availableOptionsTest(){
+        ArrayList<Option> availableOptions  = menuController.AvailableOptions();
 
-        assertThat(availableOptions.get(0), is(equalTo(optionOne)) );
+        assertThat(availableOptions.isEmpty(), is(equalTo(false)));
     }
 
     @Test
@@ -50,13 +51,6 @@ public class MenuControllerTests {
         String actualErrorMessage = "\n-- You need to choose between the available options, please try again! --\n";
 
         assertThat(errorMessage, is(equalTo(actualErrorMessage)));
-    }
-
-    @Test
-    public void GetListOfBooks_WhenCalled_ReturnsAValidList(){
-        ArrayList<Book> listOfBooks = menuController.GetListOfBooks();
-
-        assertThat(listOfBooks.size(), is(equalTo(5)));
     }
 
 }
