@@ -47,12 +47,25 @@ public class MenuController {
 
     public Boolean CheckingUserInput(String userAnswer) {
 
-        if (userAnswer.equals("1"))
-            return true;
-        else {
-            System.out.println(GettingErrorMessageWhenInvalidOptionChosen());
-            return false;
+        int answer = 0;
+        try{
+            answer = Integer.parseInt(userAnswer);
         }
+        catch (Exception e){
+            System.out.println(e);
+        }
+
+        switch (answer){
+            case 1:
+                return true;
+            case 2:
+            case 3:
+                return false;
+            default:
+                System.out.println(GettingErrorMessageWhenInvalidOptionChosen());
+                return false;
+        }
+
     }
 
     public String GettingErrorMessageWhenInvalidOptionChosen() {
