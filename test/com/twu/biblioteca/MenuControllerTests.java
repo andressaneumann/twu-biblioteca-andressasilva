@@ -25,21 +25,21 @@ public class MenuControllerTests {
 
     @Test
     public void availableOptionsTest(){
-        ArrayList<Option> availableOptions  = menuController.AvailableOptions();
+        ArrayList<Option> availableOptions  = menuController.availableOptions();
 
         assertThat(availableOptions.isEmpty(), is(equalTo(false)));
     }
 
     @Test
-    public void CheckingUserInput_WhenCorrectAnswer_ReturnsTrue(){
-        Boolean response = menuController.CheckingUserInput("1");
+    public void checkingUserInput_WhenCorrectAnswer_ReturnsTrue(){
+        Boolean response = menuController.checkingUserInput("1");
 
         assertThat(response, is(equalTo(true)));
     }
 
     @Test
-    public void CheckingUserInput_WhenWrongAnswer_ReturnsFalse(){
-        Boolean response = menuController.CheckingUserInput("2");
+    public void checkingUserInput_WhenWrongAnswer_ReturnsFalse(){
+        Boolean response = menuController.checkingUserInput("2");
 
         assertThat(response, is(equalTo(false)));
     }
@@ -51,6 +51,14 @@ public class MenuControllerTests {
         String actualErrorMessage = "\n-- You need to choose between the available options, please try again! --\n";
 
         assertThat(errorMessage, is(equalTo(actualErrorMessage)));
+    }
+
+    @Test
+    public void parseUserInput_SendingString_ReturnsInt(){
+        String stringTest = "1";
+        int result = menuController.parseUserInput(stringTest);
+
+        assertThat(result, is(equalTo(1)));
     }
 
 }

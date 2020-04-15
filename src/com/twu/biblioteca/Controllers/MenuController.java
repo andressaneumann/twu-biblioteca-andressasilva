@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 public class MenuController {
 
+    Boolean programIsRunning = true;
     ArrayList<Option> availableOptions;
     Scanner in = new Scanner(System.in);
     Boolean isAnswerValid = false;
@@ -18,26 +19,25 @@ public class MenuController {
 
     public void Main() {
 
-        while (!isAnswerValid) {
-            System.out.println("Please choose between the available options and press the respective number: ");
-            ArrayList<Option> availableOptions = AvailableOptions();
+        while (programIsRunning) {
+            System.out.println("\nPlease choose between the available options and press the respective number: ");
+            ArrayList<Option> availableOptions = availableOptions();
 
             for (int i = 0; i < availableOptions.size(); i++)
                 System.out.println(i+1 + " - " + availableOptions.get(i).showOptionName());
 
             String userAnswer = in.nextLine();
-            isAnswerValid = CheckingUserInput(userAnswer);
-        }
+            isAnswerValid = checkingUserInput(userAnswer);
 
-        ArrayList<Book> books = booksOption.getBooks();
-        System.out.println("\n** List of books **");
-        for (Book book : books) {
-            System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
+            if(isAnswerValid){
+                int finalAnswer = parseUserInput(userAnswer);
+                userAction(finalAnswer);
+            }
         }
 
     }
 
-    public ArrayList<Option> AvailableOptions() {
+    public ArrayList<Option> availableOptions() {
 
         availableOptions = new ArrayList<Option>();
         availableOptions.add(booksOption);
@@ -45,9 +45,25 @@ public class MenuController {
         return availableOptions;
     }
 
-    public Boolean CheckingUserInput(String userAnswer) {
+    public Boolean checkingUserInput(String userAnswer) {
+
+        ArrayList<String> optionsCodes = new ArrayList<String>(){
+            {
+                add("1");
+            } };
+
+        if(optionsCodes.contains(userAnswer))
+            return true;
+        else{
+            GettingErrorMessageWhenInvalidOptionChosen();
+            return false;
+        }
+    }
+
+    public int parseUserInput(String userAnswer){
 
         int answer = 0;
+
         try{
             answer = Integer.parseInt(userAnswer);
         }
@@ -55,17 +71,24 @@ public class MenuController {
             System.out.println(e);
         }
 
+        return answer;
+    }
+
+    public void userAction(int answer){
+
         switch (answer){
             case 1:
-                return true;
-            case 2:
-            case 3:
-                return false;
+                MediaController mediaController = new MediaController();
+
+                ArrayList<Book> books = mediaController.getBooks();
+                System.out.println("\n** List of books **");
+                for (Book book : books) {
+                    System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
+                }
+                break;
             default:
                 System.out.println(GettingErrorMessageWhenInvalidOptionChosen());
-                return false;
         }
-
     }
 
     public String GettingErrorMessageWhenInvalidOptionChosen() {

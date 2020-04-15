@@ -13,15 +13,7 @@ public class ListOfBooksOption implements Option {
 
     @Override
     public void optionAction() {
-        getBooks();
-    }
-
-    public ArrayList<Book> getBooks(){
-
-        BookRepository listOfBooks = new BookRepository();
-        ArrayList<Book> books = listOfBooks.GetBooks();
-
-        return books;
+        //getBooks();
     }
 
     @Override

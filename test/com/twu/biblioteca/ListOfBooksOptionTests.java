@@ -35,16 +35,4 @@ public class ListOfBooksOptionTests {
         assertThat(continueLoopResponse, is(equalTo(true)));
     }
 
-    @Test
-    public void getBooksTest(){
-        ArrayList<Book> books = listOfBooksOption.getBooks();
-
-        assertThat(books.isEmpty(), is(false));
-
-    }
-
-
-
-
-
 }
