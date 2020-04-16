@@ -20,7 +20,7 @@ public class BookRepository {
         Book firstHarryPotter = new Book (1, "Harry Potter and the Order of the Phoenix", "J. K. Rowling", 2003, true);
         Book theSilentPatient = new Book (2, "The Silent Patient", "Alex Michaelides", 2019, true);
         Book theAlchemist = new Book(3, "The Alchemist", "Paulo Coelho", 1988, true);
-        Book theGreatGatsby = new Book(4, "The Great Gatsby", "Scott Fitzgerald", 1925, true);
+        Book theGreatGatsby = new Book(4, "The Great Gatsby", "Scott Fitzgerald", 1925, false);
 
 
         books.add(hamlet);

@@ -14,7 +14,7 @@ public class MediaController {
         return books;
     }
 
-    public ArrayList<Book> availableBooks() {
+    public ArrayList<Book> getAvailableBooks() {
         ArrayList<Book> availableBooks = new ArrayList<Book>();
 
         for (int i = 0; i < books.size(); i++){
@@ -25,12 +25,31 @@ public class MediaController {
         return availableBooks;
     }
 
+    public ArrayList<Book> getCheckedOutBooks(){
+        ArrayList<Book> checkedOutBooks = new ArrayList<Book>();
 
-    public void checkoutBook(int bookCodeToCheckout) {
+        for (int i = 0; i < books.size(); i++){
+            if(books.get(i).getAvailable().equals(false))
+                checkedOutBooks.add(books.get(i));
+        }
+
+        return checkedOutBooks;
+    }
+
+
+    public void checkingOutBook(int bookCodeToCheckout) {
 
         for(int i = 0; i < books.size(); i++){
             if(books.get(i).getId() == bookCodeToCheckout)
                 bookRepository.updateBookAvailableStatus(bookCodeToCheckout, false);
         }
     }
+
+    public void returningBook(int checkedOutBookCode) {
+        for(int i = 0; i < books.size(); i++){
+            if(books.get(i).getId() == checkedOutBookCode)
+                bookRepository.updateBookAvailableStatus(checkedOutBookCode, true);
+        }
+    }
+
 }

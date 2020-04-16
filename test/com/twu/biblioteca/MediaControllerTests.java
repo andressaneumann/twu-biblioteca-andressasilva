@@ -36,21 +36,36 @@ public class MediaControllerTests {
     }
 
     @Test
-    public void getAvailableBooks_WhenCalled_ReturnAvailableBooks(){
-        ArrayList<Book> availableBooks = mediaController.availableBooks();
+    public void availableBooks_WhenCalled_ReturnAvailableBooks(){
+        ArrayList<Book> availableBooks = mediaController.getAvailableBooks();
 
         assertThat(availableBooks.get(0).getAvailable(), is(equalTo(true)));
     }
 
     @Test
     public void checkoutBook_WhenCalled_ChangeBookAvailableStatusToFalse(){
-        ArrayList<Book> availableBooks = mediaController.availableBooks();
+        ArrayList<Book> availableBooks = mediaController.getAvailableBooks();
         int listSize = availableBooks.size();
         int randomBookCodeToCheckout = random.nextInt(listSize);
 
-        mediaController.checkoutBook(randomBookCodeToCheckout);
+        Book currentBook = availableBooks.get(randomBookCodeToCheckout);
+
+        mediaController.checkingOutBook(currentBook.getId());
 
         assertThat(availableBooks.get(randomBookCodeToCheckout).getAvailable(), is(equalTo(false)));
+    }
+
+    @Test
+    public void returningBook_WhenCalled_TurnsBookAvailableAgain(){
+        ArrayList<Book> checkedOutBooks = mediaController.getCheckedOutBooks();
+        int listSize = checkedOutBooks.size();
+        int randomCheckedOutBookCode = random.nextInt(listSize);
+
+        Book currentBook = checkedOutBooks.get(randomCheckedOutBookCode);
+
+        mediaController.returningBook(currentBook.getId());
+
+        assertThat(checkedOutBooks.get(randomCheckedOutBookCode).getAvailable(), is(equalTo(true)));
     }
 
 }

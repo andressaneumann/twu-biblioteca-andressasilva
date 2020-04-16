@@ -13,7 +13,8 @@ public class MenuController {
     MediaController mediaController = new MediaController();
 
     ArrayList<Book> books = mediaController.getBooks();
-    ArrayList<Book> booksToCheckout = mediaController.availableBooks();
+    ArrayList<Book> booksToCheckout = mediaController.getAvailableBooks();
+    ArrayList<Book> checkedOutBooks = mediaController.getCheckedOutBooks();
     ArrayList<Option> availableOptions = new ArrayList<Option>();
 
     Boolean programIsRunning = true;
@@ -27,16 +28,19 @@ public class MenuController {
     public void instantiateOptions(){
         Option booksList = new Option(1, "1. List of Books");
         Option checkoutBook = new Option(2, "2. Checkout a Book");
+        Option returnABook = new Option(3, "3. Return a Book");
         Option exit = new Option(5, "5. Exit program");
 
         availableOptions.add(booksList);
         availableOptions.add(checkoutBook);
+        availableOptions.add(returnABook);
         availableOptions.add(exit);
     }
 
     public void main() {
 
         while (programIsRunning) {
+            updateBookLists();
             System.out.println("\nPlease choose between the available options and press the respective number: ");
 
             for (int i = 0; i < availableOptions.size(); i++)
@@ -90,12 +94,12 @@ public class MenuController {
         switch (answer){
             case 1:
                 System.out.println("\n** List of books **");
-                printAvailableBooks();
+                printBooks(true);
             break;
 
             case 2:
                 System.out.println("List of books available to checkout: ");
-                printAvailableBooks();
+                printBooks(true);
 
                 System.out.println("Please select the book code correspondent to the book you want to checkout:");
                 int bookCodeToCheckout = readingIntegerOutput();
@@ -103,8 +107,7 @@ public class MenuController {
                 Boolean isBookAvailable = checkingIfBookCodeIsValid(bookCodeToCheckout);
                 if(isBookAvailable){
                     try {
-                        mediaController.checkoutBook(bookCodeToCheckout);
-                        updateBooksAvailableList();
+                        mediaController.checkingOutBook(bookCodeToCheckout);
                         System.out.println("Thank you! Enjoy the book!");
                     }
                     catch (Exception e){
@@ -114,6 +117,13 @@ public class MenuController {
                 else
                     System.out.println("Sorry, that book is not available!");
             break;
+
+            case 3:
+                System.out.println("\nCurrent CheckedOut books: ");
+                printBooks(false);
+
+                System.out.println("\nPlease inform the code of the book you want to return: ");
+                readingIntegerOutput();
 
             case 5:
                 programIsRunning = false;
@@ -125,13 +135,20 @@ public class MenuController {
         }
     }
 
-    public void updateBooksAvailableList(){
-        booksToCheckout = mediaController.availableBooks();
+    public void updateBookLists(){
+        booksToCheckout = mediaController.getAvailableBooks();
+        checkedOutBooks = mediaController.getCheckedOutBooks();
     }
 
-    public void printAvailableBooks(){
-        for (Book book : booksToCheckout) {
-            System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
+    public void printBooks(boolean available){
+        if(available){
+            for (Book book : booksToCheckout) {
+                System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
+            }
+        }else{
+            for(Book book : checkedOutBooks){
+                System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
+            }
         }
     }
 

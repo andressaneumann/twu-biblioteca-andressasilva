@@ -44,7 +44,7 @@ public class MenuControllerTests {
 
     @Test
     public void checkingIfBookCodeIsValid_WhenCorrectAnswer_ReturnsTrue(){
-        ArrayList<Book> availableBooks = mediaController.availableBooks();
+        ArrayList<Book> availableBooks = mediaController.getAvailableBooks();
         int listSize = availableBooks.size();
         int randomBookCode = random.nextInt(listSize);
 
@@ -55,7 +55,7 @@ public class MenuControllerTests {
 
     @Test
     public void checkingIfBookCodeIsValid_WhenWrongAnswer_ReturnsFalse(){
-        ArrayList<Book> availableBooks = mediaController.availableBooks();
+        ArrayList<Book> availableBooks = mediaController.getAvailableBooks();
         int listSize = availableBooks.size();
         int randomBookCode = listSize + 1;
 
