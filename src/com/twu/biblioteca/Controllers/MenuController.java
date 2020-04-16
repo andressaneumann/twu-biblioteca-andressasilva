@@ -114,12 +114,14 @@ public class MenuController {
                     try {
                         mediaController.checkoutBook(bookCodeConverted);
                         updateBooksAvailableList();
-                        System.out.println("Success! Your did checkout your book!");
+                        System.out.println("Thank you! Enjoy the book!");
                     }
                     catch (Exception e){
                         System.out.println(e);
                     }
                 }
+                else
+                    System.out.println("Sorry, that book is not available!");
 
             break;
             case 5:
