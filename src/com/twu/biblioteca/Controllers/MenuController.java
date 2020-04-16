@@ -42,7 +42,8 @@ public class MenuController {
             for (int i = 0; i < availableOptions.size(); i++)
                 System.out.println(availableOptions.get(i).getName());
 
-            String userAnswer = in.nextLine();
+            int userAnswer = readingIntegerOutput();
+
             isAnswerValid = checkingMenuInputSelected(userAnswer);
 
             if(isAnswerValid){
@@ -52,12 +53,22 @@ public class MenuController {
 
     }
 
-    public Boolean checkingMenuInputSelected(String userAnswer) {
-        int finalAnswer = parseUserInput(userAnswer);
+    public int readingIntegerOutput(){
+        while(!in.hasNextInt()){
+            System.out.println("\nYou need to insert a number! Please try again.");
+            in.next();
+        }
+        int userAnswer = in.nextInt();
+
+        return userAnswer;
+    }
+
+    public Boolean checkingMenuInputSelected(int userAnswer) {
+
         Boolean optionFound = false;
 
         for(Option option : availableOptions){
-            if(option.getId() == finalAnswer)
+            if(option.getId() == userAnswer)
                optionFound = true;
         }
 
@@ -74,25 +85,11 @@ public class MenuController {
         return codeFound;
     }
 
-    public int parseUserInput(String userAnswer){
+    public void userAction(int answer){
 
-        int answer = 0;
+/*        int convertedAnswer = parseUserInput(answer);*/
 
-        try{
-            answer = Integer.parseInt(userAnswer);
-        }
-        catch (Exception e){
-            System.out.println(e);
-        }
-
-        return answer;
-    }
-
-    public void userAction(String answer){
-
-        int convertedAnswer = parseUserInput(answer);
-
-        switch (convertedAnswer){
+        switch (answer){
             case 1:
                 System.out.println("\n** List of books **");
                 for (Book book : booksToCheckout) {
@@ -105,14 +102,12 @@ public class MenuController {
                 for(Book book : booksToCheckout)
                     System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
                 System.out.println("Please select the book code correspondent to the book you want to checkout:");
-                String bookCodeToCheckout = in.nextLine();
+                int bookCodeToCheckout = readingIntegerOutput();
 
-                int bookCodeConverted = parseUserInput(bookCodeToCheckout);
-                Boolean isBookAvailable = checkingBookCodeInserted(bookCodeConverted);
-
+                Boolean isBookAvailable = checkingBookCodeInserted(bookCodeToCheckout);
                 if(isBookAvailable){
                     try {
-                        mediaController.checkoutBook(bookCodeConverted);
+                        mediaController.checkoutBook(bookCodeToCheckout);
                         updateBooksAvailableList();
                         System.out.println("Thank you! Enjoy the book!");
                     }

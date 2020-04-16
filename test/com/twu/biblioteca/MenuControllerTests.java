@@ -30,14 +30,14 @@ public class MenuControllerTests {
 
     @Test
     public void checkingMenuInputSelected_WhenCorrectAnswer_ReturnsTrue(){
-        Boolean response = menuController.checkingMenuInputSelected("1");
+        Boolean response = menuController.checkingMenuInputSelected(1);
 
         assertThat(response, is(equalTo(true)));
     }
 
     @Test
     public void checkingMenuInputSelected_WhenWrongAnswer_ReturnsFalse(){
-        Boolean response = menuController.checkingMenuInputSelected("f");
+        Boolean response = menuController.checkingMenuInputSelected(8);
 
         assertThat(response, is(equalTo(false)));
     }
@@ -71,14 +71,6 @@ public class MenuControllerTests {
         String actualErrorMessage = "\n-- You need to choose between the available options, please try again! --\n";
 
         assertThat(errorMessage, is(equalTo(actualErrorMessage)));
-    }
-
-    @Test
-    public void parseUserInput_SendingString_ReturnsInt(){
-        String stringTest = "1";
-        int result = menuController.parseUserInput(stringTest);
-
-        assertThat(result, is(equalTo(1)));
     }
 
 }
