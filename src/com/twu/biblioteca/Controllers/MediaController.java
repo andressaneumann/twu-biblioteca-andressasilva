@@ -7,8 +7,8 @@ import java.util.ArrayList;
 
 public class MediaController {
 
-    BookRepository listOfBooks = new BookRepository();
-    ArrayList<Book> books = listOfBooks.GetBooks();
+    BookRepository bookRepository = new BookRepository();
+    ArrayList<Book> books = bookRepository.getBooks();
 
     public ArrayList<Book> getBooks(){
         return books;
@@ -23,6 +23,14 @@ public class MediaController {
         }
 
         return availableBooks;
+    }
 
+
+    public void checkoutBook(int bookCodeToCheckout) {
+
+        for(int i = 0; i < books.size(); i++){
+            if(books.get(i).getId() == bookCodeToCheckout)
+                bookRepository.updateBookAvailableStatus(bookCodeToCheckout, false);
+        }
     }
 }

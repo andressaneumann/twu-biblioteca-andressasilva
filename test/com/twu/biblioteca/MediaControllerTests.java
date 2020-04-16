@@ -2,11 +2,13 @@ package com.twu.biblioteca;
 
 import com.twu.biblioteca.Controllers.MediaController;
 import com.twu.biblioteca.Models.Book;
+import com.twu.biblioteca.Repositories.BookRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -14,11 +16,15 @@ import static org.junit.Assert.assertThat;
 
 public class MediaControllerTests {
 
+    BookRepository bookRepository;
     MediaController mediaController;
+    Random random;
 
     @Before
     public void setUp(){
+
         mediaController = new MediaController();
+        random = new Random();
     }
 
     @Test
@@ -34,6 +40,17 @@ public class MediaControllerTests {
         ArrayList<Book> availableBooks = mediaController.availableBooks();
 
         assertThat(availableBooks.get(0).getAvailable(), is(equalTo(true)));
+    }
+
+    @Test
+    public void checkoutBook_WhenCalled_ChangeBookAvailableStatusToFalse(){
+        ArrayList<Book> availableBooks = mediaController.availableBooks();
+        int listSize = availableBooks.size();
+        int randomBookCodeToCheckout = random.nextInt(listSize);
+
+        mediaController.checkoutBook(randomBookCodeToCheckout);
+
+        assertThat(availableBooks.get(randomBookCodeToCheckout).getAvailable(), is(equalTo(false)));
     }
 
 }

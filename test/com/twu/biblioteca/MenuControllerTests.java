@@ -1,7 +1,9 @@
 package com.twu.biblioteca;
 
+import com.twu.biblioteca.Controllers.MediaController;
 import com.twu.biblioteca.Controllers.MenuController;
 import com.twu.biblioteca.Models.Book;
+import com.twu.biblioteca.Repositories.BookRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,28 +13,55 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MenuControllerTests {
 
     MenuController menuController;
+    MediaController mediaController;
+    Random random;
 
     @Before
     public void SetUp(){
         menuController = new MenuController();
+        mediaController = new MediaController();
+        random = new Random();
     }
 
     @Test
-    public void checkingUserInput_WhenCorrectAnswer_ReturnsTrue(){
-        Boolean response = menuController.checkingUserInput("1");
+    public void checkingMenuInputSelected_WhenCorrectAnswer_ReturnsTrue(){
+        Boolean response = menuController.checkingMenuInputSelected("1");
 
         assertThat(response, is(equalTo(true)));
     }
 
     @Test
-    public void checkingUserInput_WhenWrongAnswer_ReturnsFalse(){
-        Boolean response = menuController.checkingUserInput("f");
+    public void checkingMenuInputSelected_WhenWrongAnswer_ReturnsFalse(){
+        Boolean response = menuController.checkingMenuInputSelected("f");
 
         assertThat(response, is(equalTo(false)));
+    }
+
+    @Test
+    public void checkingBookCodeInserted_WhenCorrectAnswer_ReturnsTrue(){
+        ArrayList<Book> availableBooks = mediaController.availableBooks();
+        int listSize = availableBooks.size();
+        int randomBookCode = random.nextInt(listSize);
+
+        Boolean isBookAvailable = menuController.checkingBookCodeInserted(randomBookCode);
+
+        assertThat(isBookAvailable, is(equalTo(true)));
+    }
+
+    @Test
+    public void checkingBookCodeInserted_WhenWrongAnswer_ReturnsFalse(){
+        ArrayList<Book> availableBooks = mediaController.availableBooks();
+        int listSize = availableBooks.size();
+        int randomBookCode = listSize + 1;
+
+        Boolean isBookAvailable = menuController.checkingBookCodeInserted(randomBookCode);
+
+        assertThat(isBookAvailable, is(equalTo(false)));
     }
 
     @Test

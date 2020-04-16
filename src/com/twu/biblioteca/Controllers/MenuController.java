@@ -10,10 +10,15 @@ import java.util.Scanner;
 
 public class MenuController {
 
-    Boolean programIsRunning = true;
+    MediaController mediaController = new MediaController();
+
+    ArrayList<Book> books = mediaController.getBooks();
+    ArrayList<Book> booksToCheckout = mediaController.availableBooks();
     ArrayList<Option> availableOptions = new ArrayList<Option>();
-    Scanner in = new Scanner(System.in);
+
+    Boolean programIsRunning = true;
     Boolean isAnswerValid = false;
+    Scanner in = new Scanner(System.in);
 
     public MenuController() {
         instantiateOptions();
@@ -38,7 +43,7 @@ public class MenuController {
                 System.out.println(availableOptions.get(i).getName());
 
             String userAnswer = in.nextLine();
-            isAnswerValid = checkingUserInput(userAnswer);
+            isAnswerValid = checkingMenuInputSelected(userAnswer);
 
             if(isAnswerValid){
                 userAction(userAnswer);
@@ -47,18 +52,26 @@ public class MenuController {
 
     }
 
-    public Boolean checkingUserInput(String userAnswer) {
-
+    public Boolean checkingMenuInputSelected(String userAnswer) {
         int finalAnswer = parseUserInput(userAnswer);
         Boolean optionFound = false;
 
         for(Option option : availableOptions){
-            int id = option.getId();
-            if(id == finalAnswer)
+            if(option.getId() == finalAnswer)
                optionFound = true;
         }
 
         return optionFound;
+    }
+
+    public Boolean checkingBookCodeInserted(int bookCode) {
+        Boolean codeFound = false;
+
+        for(Book book : booksToCheckout){
+            if(book.getId() == bookCode)
+                codeFound = true;
+        }
+        return codeFound;
     }
 
     public int parseUserInput(String userAnswer){
@@ -81,15 +94,35 @@ public class MenuController {
 
         switch (convertedAnswer){
             case 1:
-                MediaController mediaController = new MediaController();
-
-                ArrayList<Book> books = mediaController.getBooks();
                 System.out.println("\n** List of books **");
-                for (Book book : books) {
+                for (Book book : booksToCheckout) {
                     System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
                 }
                 break;
-            case 4:
+            case 2:
+                System.out.println("List of books available to checkout: ");
+
+                for(Book book : booksToCheckout)
+                    System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
+                System.out.println("Please select the book code correspondent to the book you want to checkout:");
+                String bookCodeToCheckout = in.nextLine();
+
+                int bookCodeConverted = parseUserInput(bookCodeToCheckout);
+                Boolean isBookAvailable = checkingBookCodeInserted(bookCodeConverted);
+
+                if(isBookAvailable){
+                    try {
+                        mediaController.checkoutBook(bookCodeConverted);
+                        updateBooksAvailableList();
+                        System.out.println("Success! Your did checkout your book!");
+                    }
+                    catch (Exception e){
+                        System.out.println(e);
+                    }
+                }
+
+            break;
+            case 5:
                 programIsRunning = false;
                 System.out.println("Exiting the program...");
                 System.exit(0);
@@ -99,10 +132,15 @@ public class MenuController {
         }
     }
 
+    public void updateBooksAvailableList(){
+        booksToCheckout = mediaController.availableBooks();
+    }
+
     public String GettingErrorMessageWhenInvalidOptionChosen() {
         String errorMessage = "\n-- You need to choose between the available options, please try again! --\n";
 
         return errorMessage;
     }
+
 
 }

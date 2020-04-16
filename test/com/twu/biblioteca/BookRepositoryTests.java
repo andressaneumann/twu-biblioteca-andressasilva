@@ -26,7 +26,7 @@ public class BookRepositoryTests {
     public void GetBooks_ComparingToAnEmptyList_AssertsNotEquals(){
 
         ArrayList<Book> emptyBookList = new ArrayList<Book>();
-        ArrayList<Book> allBooks = bookRepository.GetBooks();
+        ArrayList<Book> allBooks = bookRepository.getBooks();
 
         assertNotEquals(emptyBookList, allBooks);
     }
