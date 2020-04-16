@@ -1,6 +1,7 @@
 package com.twu.biblioteca;
 
 import com.twu.biblioteca.Controllers.MenuController;
+import com.twu.biblioteca.Models.Welcome;
 
 public class BibliotecaApp {
 
@@ -12,6 +13,6 @@ public class BibliotecaApp {
 
         MenuController bibliotecaMenu = new MenuController();
 
-        bibliotecaMenu.Main();
+        bibliotecaMenu.main();
     }
 }

@@ -1,6 +1,7 @@
 package com.twu.biblioteca.Controllers;
 
 import com.twu.biblioteca.Models.Book;
+import com.twu.biblioteca.Models.Option;
 import com.twu.biblioteca.Repositories.BookRepository;
 
 import java.lang.reflect.Array;
@@ -10,53 +11,54 @@ import java.util.Scanner;
 public class MenuController {
 
     Boolean programIsRunning = true;
-    ArrayList<String> availableOptions;
+    ArrayList<Option> availableOptions = new ArrayList<Option>();
     Scanner in = new Scanner(System.in);
     Boolean isAnswerValid = false;
 
-    public void Main() {
+    public MenuController() {
+        instantiateOptions();
+    }
+
+    public void instantiateOptions(){
+        Option booksList = new Option(1, "1. List of Books");
+        Option checkoutBook = new Option(2, "2. Checkout a Book");
+        Option exit = new Option(5, "5. Exit program");
+
+        availableOptions.add(booksList);
+        availableOptions.add(checkoutBook);
+        availableOptions.add(exit);
+    }
+
+    public void main() {
 
         while (programIsRunning) {
             System.out.println("\nPlease choose between the available options and press the respective number: ");
-            ArrayList<String> availableOptions = availableOptions();
 
             for (int i = 0; i < availableOptions.size(); i++)
-                System.out.println(availableOptions.get(i));
+                System.out.println(availableOptions.get(i).getName());
 
             String userAnswer = in.nextLine();
             isAnswerValid = checkingUserInput(userAnswer);
 
             if(isAnswerValid){
-                int finalAnswer = parseUserInput(userAnswer);
-                userAction(finalAnswer);
+                userAction(userAnswer);
             }
         }
 
     }
 
-    public ArrayList<String> availableOptions() {
-
-        availableOptions = new ArrayList<String>();
-        availableOptions.add("1. List books");
-        availableOptions.add("4 - Exit program");
-
-        return availableOptions;
-    }
-
     public Boolean checkingUserInput(String userAnswer) {
 
-        ArrayList<String> optionsCodes = new ArrayList<String>(){
-            {
-                add("1");
-                add ("4");
-            } };
+        int finalAnswer = parseUserInput(userAnswer);
+        Boolean optionFound = false;
 
-        if(optionsCodes.contains(userAnswer))
-            return true;
-        else{
-            GettingErrorMessageWhenInvalidOptionChosen();
-            return false;
+        for(Option option : availableOptions){
+            int id = option.getId();
+            if(id == finalAnswer)
+               optionFound = true;
         }
+
+        return optionFound;
     }
 
     public int parseUserInput(String userAnswer){
@@ -73,9 +75,11 @@ public class MenuController {
         return answer;
     }
 
-    public void userAction(int answer){
+    public void userAction(String answer){
 
-        switch (answer){
+        int convertedAnswer = parseUserInput(answer);
+
+        switch (convertedAnswer){
             case 1:
                 MediaController mediaController = new MediaController();
 
@@ -89,6 +93,7 @@ public class MenuController {
                 programIsRunning = false;
                 System.out.println("Exiting the program...");
                 System.exit(0);
+                break;
             default:
                 System.out.println(GettingErrorMessageWhenInvalidOptionChosen());
         }

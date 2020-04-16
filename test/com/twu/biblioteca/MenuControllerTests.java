@@ -17,15 +17,8 @@ public class MenuControllerTests {
     MenuController menuController;
 
     @Before
-    public void SetUp() throws Exception{
+    public void SetUp(){
         menuController = new MenuController();
-    }
-
-    @Test
-    public void availableOptionsTest(){
-        ArrayList<String> availableOptions  = menuController.availableOptions();
-
-        assertThat(availableOptions.isEmpty(), is(equalTo(false)));
     }
 
     @Test
@@ -37,7 +30,7 @@ public class MenuControllerTests {
 
     @Test
     public void checkingUserInput_WhenWrongAnswer_ReturnsFalse(){
-        Boolean response = menuController.checkingUserInput("2");
+        Boolean response = menuController.checkingUserInput("f");
 
         assertThat(response, is(equalTo(false)));
     }

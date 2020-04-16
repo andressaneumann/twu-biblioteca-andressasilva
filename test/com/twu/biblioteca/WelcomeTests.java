@@ -1,5 +1,6 @@
 package com.twu.biblioteca;
 
+import com.twu.biblioteca.Models.Welcome;
 import org.junit.Before;
 import org.junit.Test;
 
