@@ -123,8 +123,17 @@ public class MenuController {
                 printBooks(false);
 
                 System.out.println("\nPlease inform the code of the book you want to return: ");
-                readingIntegerOutput();
+                int bookCodeToReturn = readingIntegerOutput();
 
+                try{
+                    mediaController.returningBook(bookCodeToReturn);
+                    System.out.println("Thank you for returning the book!");
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+
+            break;
             case 5:
                 programIsRunning = false;
                 System.out.println("Exiting the program...");
