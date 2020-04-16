@@ -29,44 +29,43 @@ public class MenuControllerTests {
     }
 
     @Test
-    public void checkingMenuInputSelected_WhenCorrectAnswer_ReturnsTrue(){
-        Boolean response = menuController.checkingMenuInputSelected(1);
+    public void checkingIfMenuInputIsValid_WhenCorrectAnswer_ReturnsTrue(){
+        Boolean response = menuController.checkingIfMenuInputIsValid(1);
 
         assertThat(response, is(equalTo(true)));
     }
 
     @Test
-    public void checkingMenuInputSelected_WhenWrongAnswer_ReturnsFalse(){
-        Boolean response = menuController.checkingMenuInputSelected(8);
+    public void checkingIfMenuInputIsValid_WhenWrongAnswer_ReturnsFalse(){
+        Boolean response = menuController.checkingIfMenuInputIsValid(8);
 
         assertThat(response, is(equalTo(false)));
     }
 
     @Test
-    public void checkingBookCodeInserted_WhenCorrectAnswer_ReturnsTrue(){
+    public void checkingIfBookCodeIsValid_WhenCorrectAnswer_ReturnsTrue(){
         ArrayList<Book> availableBooks = mediaController.availableBooks();
         int listSize = availableBooks.size();
         int randomBookCode = random.nextInt(listSize);
 
-        Boolean isBookAvailable = menuController.checkingBookCodeInserted(randomBookCode);
+        Boolean isBookAvailable = menuController.checkingIfBookCodeIsValid(randomBookCode);
 
         assertThat(isBookAvailable, is(equalTo(true)));
     }
 
     @Test
-    public void checkingBookCodeInserted_WhenWrongAnswer_ReturnsFalse(){
+    public void checkingIfBookCodeIsValid_WhenWrongAnswer_ReturnsFalse(){
         ArrayList<Book> availableBooks = mediaController.availableBooks();
         int listSize = availableBooks.size();
         int randomBookCode = listSize + 1;
 
-        Boolean isBookAvailable = menuController.checkingBookCodeInserted(randomBookCode);
+        Boolean isBookAvailable = menuController.checkingIfBookCodeIsValid(randomBookCode);
 
         assertThat(isBookAvailable, is(equalTo(false)));
     }
 
     @Test
     public void GettingErrorMessageWhenInvalidOptionChosen_WhenCalled_ReturnsMessage(){
-
         String errorMessage = menuController.GettingErrorMessageWhenInvalidOptionChosen();
         String actualErrorMessage = "\n-- You need to choose between the available options, please try again! --\n";
 

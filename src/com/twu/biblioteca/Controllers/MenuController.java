@@ -44,7 +44,7 @@ public class MenuController {
 
             int userAnswer = readingIntegerOutput();
 
-            isAnswerValid = checkingMenuInputSelected(userAnswer);
+            isAnswerValid = checkingIfMenuInputIsValid(userAnswer);
 
             if(isAnswerValid){
                 userAction(userAnswer);
@@ -63,7 +63,7 @@ public class MenuController {
         return userAnswer;
     }
 
-    public Boolean checkingMenuInputSelected(int userAnswer) {
+    public Boolean checkingIfMenuInputIsValid(int userAnswer) {
 
         Boolean optionFound = false;
 
@@ -75,7 +75,7 @@ public class MenuController {
         return optionFound;
     }
 
-    public Boolean checkingBookCodeInserted(int bookCode) {
+    public Boolean checkingIfBookCodeIsValid(int bookCode) {
         Boolean codeFound = false;
 
         for(Book book : booksToCheckout){
@@ -87,24 +87,20 @@ public class MenuController {
 
     public void userAction(int answer){
 
-/*        int convertedAnswer = parseUserInput(answer);*/
-
         switch (answer){
             case 1:
                 System.out.println("\n** List of books **");
-                for (Book book : booksToCheckout) {
-                    System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
-                }
-                break;
+                printAvailableBooks();
+            break;
+
             case 2:
                 System.out.println("List of books available to checkout: ");
+                printAvailableBooks();
 
-                for(Book book : booksToCheckout)
-                    System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
                 System.out.println("Please select the book code correspondent to the book you want to checkout:");
                 int bookCodeToCheckout = readingIntegerOutput();
 
-                Boolean isBookAvailable = checkingBookCodeInserted(bookCodeToCheckout);
+                Boolean isBookAvailable = checkingIfBookCodeIsValid(bookCodeToCheckout);
                 if(isBookAvailable){
                     try {
                         mediaController.checkoutBook(bookCodeToCheckout);
@@ -117,8 +113,8 @@ public class MenuController {
                 }
                 else
                     System.out.println("Sorry, that book is not available!");
-
             break;
+
             case 5:
                 programIsRunning = false;
                 System.out.println("Exiting the program...");
@@ -133,11 +129,15 @@ public class MenuController {
         booksToCheckout = mediaController.availableBooks();
     }
 
+    public void printAvailableBooks(){
+        for (Book book : booksToCheckout) {
+            System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
+        }
+    }
+
     public String GettingErrorMessageWhenInvalidOptionChosen() {
         String errorMessage = "\n-- You need to choose between the available options, please try again! --\n";
 
         return errorMessage;
     }
-
-
 }
