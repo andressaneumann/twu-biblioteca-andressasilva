@@ -5,6 +5,7 @@ import com.twu.biblioteca.Models.Option;
 import com.twu.biblioteca.Repositories.BookRepository;
 
 import java.lang.reflect.Array;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -43,18 +44,18 @@ public class MenuController {
             updateBookLists();
             System.out.println("\nPlease choose between the available options and press the respective number: ");
 
-            for (int i = 0; i < availableOptions.size(); i++)
-                System.out.println(availableOptions.get(i).getName());
-
+            printMenuOptions();
             int userAnswer = readingIntegerOutput();
-
             isAnswerValid = checkingIfMenuInputIsValid(userAnswer);
 
-            if(isAnswerValid){
+            if(isAnswerValid)
                 userAction(userAnswer);
-            }
         }
+    }
 
+    public void printMenuOptions(){
+        for (int i = 0; i < availableOptions.size(); i++)
+            System.out.println(availableOptions.get(i).getName());
     }
 
     public int readingIntegerOutput(){
@@ -79,10 +80,18 @@ public class MenuController {
         return optionFound;
     }
 
-    public Boolean checkingIfBookCodeIsValid(int bookCode) {
+    public Boolean checkingIfBookCodeIsValid(int bookCode, Boolean isAvailable) {
         Boolean codeFound = false;
 
-        for(Book book : booksToCheckout){
+        if(isAvailable){
+            for(Book book : booksToCheckout){
+                if(book.getId() == bookCode)
+                    codeFound = true;
+            }
+            return codeFound;
+        }
+
+        for(Book book : checkedOutBooks){
             if(book.getId() == bookCode)
                 codeFound = true;
         }
@@ -91,49 +100,39 @@ public class MenuController {
 
     public void userAction(int answer){
 
+        String messageAction = "";
+        String messageToPrint = "";
+        String processOutput = "";
+
         switch (answer){
             case 1:
-                System.out.println("\n** List of books **");
-                printBooks(true);
-            break;
+                messageAction = "books:";
+                messageToPrint = listMessage(booksToCheckout, messageAction, true);
 
+                System.out.println(messageToPrint);
+                break;
             case 2:
-                System.out.println("List of books available to checkout: ");
-                printBooks(true);
+                messageAction = "books to checkout: ";
+                messageToPrint = listMessage(booksToCheckout, messageAction, true);
+                System.out.println(messageToPrint);
 
                 System.out.println("Please select the book code correspondent to the book you want to checkout:");
                 int bookCodeToCheckout = readingIntegerOutput();
 
-                Boolean isBookAvailable = checkingIfBookCodeIsValid(bookCodeToCheckout);
-                if(isBookAvailable){
-                    try {
-                        mediaController.checkingOutBook(bookCodeToCheckout);
-                        System.out.println("Thank you! Enjoy the book!");
-                    }
-                    catch (Exception e){
-                        System.out.println(e);
-                    }
-                }
-                else
-                    System.out.println("Sorry, that book is not available!");
-            break;
-
+                processOutput = checkoutProcess(bookCodeToCheckout);
+                System.out.println(processOutput);
+                break;
             case 3:
-                System.out.println("\nCurrent CheckedOut books: ");
-                printBooks(false);
+                messageAction = "current checked out books: ";
+                messageToPrint = listMessage(booksToCheckout, messageAction, false);
+                System.out.println(messageToPrint);
 
                 System.out.println("\nPlease inform the code of the book you want to return: ");
                 int bookCodeToReturn = readingIntegerOutput();
 
-                try{
-                    mediaController.returningBook(bookCodeToReturn);
-                    System.out.println("Thank you for returning the book!");
-                }
-                catch (Exception e){
-                    System.out.println(e);
-                }
-
-            break;
+                processOutput = returningBookProcess(bookCodeToReturn);
+                System.out.println(processOutput);
+                break;
             case 5:
                 programIsRunning = false;
                 System.out.println("Exiting the program...");
@@ -144,26 +143,65 @@ public class MenuController {
         }
     }
 
+    public String listMessage(ArrayList<Book> list, String messageAction, Boolean isAvailable){
+        String message = "List of " + messageAction + "\n";
+        Boolean isListEmpty = checkingIfListIsEmpty(list);
+
+        if(!isListEmpty)
+            return message + returnListOfBooks(isAvailable);
+
+        return message + "Nothing to show. List empty!";
+
+    }
+
     public void updateBookLists(){
         booksToCheckout = mediaController.getAvailableBooks();
         checkedOutBooks = mediaController.getCheckedOutBooks();
     }
 
-    public void printBooks(boolean available){
-        if(available){
-            for (Book book : booksToCheckout) {
-                System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
-            }
-        }else{
-            for(Book book : checkedOutBooks){
-                System.out.println("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased());
-            }
+    public String checkoutProcess(int bookCodeToCheckout){
+        Boolean isBookAvailable = checkingIfBookCodeIsValid(bookCodeToCheckout, true);
+
+        if(isBookAvailable){
+            mediaController.checkingOutBook(bookCodeToCheckout);
+            return "Thank you! Enjoy the book!";
         }
+
+        return "Sorry, that book is not available!";
+    }
+
+    public String returningBookProcess(int bookCodeToReturn){
+        Boolean isBookAvailable = checkingIfBookCodeIsValid(bookCodeToReturn, false);
+
+        if(isBookAvailable){
+            mediaController.returningBook(bookCodeToReturn);
+            return "Thank you for returning the book!";
+        }
+        return "That is not a valid book to return.";
+    }
+
+    public Boolean checkingIfListIsEmpty(ArrayList<Book> list){
+        return list.isEmpty();
+    }
+
+    public String returnListOfBooks(Boolean isAvailable){
+        String listOfBooksToCheckOut = "";
+        String listOfBookCheckedOut = "";
+
+        if(isAvailable){
+            for (Book book : booksToCheckout) {
+                listOfBooksToCheckOut += ("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased() + "\n");
+            }
+            return listOfBooksToCheckOut;
+        }
+
+        for(Book book : checkedOutBooks){
+            listOfBookCheckedOut += ("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased() + "\n");
+        }
+        return listOfBookCheckedOut;
     }
 
     public String GettingErrorMessageWhenInvalidOptionChosen() {
-        String errorMessage = "\n-- You need to choose between the available options, please try again! --\n";
-
-        return errorMessage;
+        return "\n-- You need to choose between the available options, please try again! --\n";
     }
 }
