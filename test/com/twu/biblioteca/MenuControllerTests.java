@@ -3,6 +3,7 @@ package com.twu.biblioteca;
 import com.twu.biblioteca.Controllers.MediaController;
 import com.twu.biblioteca.Controllers.MenuController;
 import com.twu.biblioteca.Models.Book;
+import com.twu.biblioteca.Models.Movie;
 import com.twu.biblioteca.Repositories.BookRepository;
 import org.junit.Assert;
 import org.junit.Before;
@@ -87,7 +88,7 @@ public class MenuControllerTests {
         String messageAction = "books:";
         String expectedOutput = "List of books:\nNothing to show. List empty!";
 
-        String realOutput = menuController.listMessage(emptyList, messageAction, true);
+        String realOutput = menuController.listMessage(emptyList, Book.class, messageAction, true);
 
         assertThat(expectedOutput, is(equalTo(realOutput)));
     }
@@ -101,7 +102,7 @@ public class MenuControllerTests {
                 "Book Code: 2 | Title: The Silent Patient | Author: Alex Michaelides | Publication Year: 2019\n" +
                 "Book Code: 3 | Title: The Alchemist | Author: Paulo Coelho | Publication Year: 1988\n";
 
-        String realOutput = menuController.listMessage(availableBooks, messageAction, true);
+        String realOutput = menuController.listMessage(availableBooks,Book.class, messageAction, true);
 
         assertThat(expectedOutput, is(equalTo(realOutput)));
     }
@@ -113,7 +114,7 @@ public class MenuControllerTests {
         String expectedOutput = "List of current checked out books: \n" +
                 "Book Code: 4 | Title: The Great Gatsby | Author: Scott Fitzgerald | Publication Year: 1925\n";
 
-        String realOutput = menuController.listMessage(checkedOutBooks, messageAction, false);
+        String realOutput = menuController.listMessage(checkedOutBooks,Book.class, messageAction, false);
 
         assertThat(expectedOutput, is(equalTo(realOutput)));
     }
@@ -184,7 +185,7 @@ public class MenuControllerTests {
                 "Book Code: 2 | Title: The Silent Patient | Author: Alex Michaelides | Publication Year: 2019\n" +
                 "Book Code: 3 | Title: The Alchemist | Author: Paulo Coelho | Publication Year: 1988\n";
 
-        String realOutput = menuController.returnListOfBooks(isAvailable);
+        String realOutput = menuController.returnListOfMedia(isAvailable, Book.class);
 
         assertThat(expectedOutput, is(equalTo(realOutput)));
     }
@@ -194,7 +195,7 @@ public class MenuControllerTests {
         Boolean isAvailable = false;
         String expectedOutput = "Book Code: 4 | Title: The Great Gatsby | Author: Scott Fitzgerald | Publication Year: 1925\n";
 
-        String realOutput = menuController.returnListOfBooks(isAvailable);
+        String realOutput = menuController.returnListOfMedia(isAvailable, Book.class);
 
         assertThat(expectedOutput, is(equalTo(realOutput)));
     }

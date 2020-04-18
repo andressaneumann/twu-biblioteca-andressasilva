@@ -1,7 +1,9 @@
 package com.twu.biblioteca.Controllers;
 
 import com.twu.biblioteca.Models.Book;
+import com.twu.biblioteca.Models.Movie;
 import com.twu.biblioteca.Repositories.BookRepository;
+import com.twu.biblioteca.Repositories.MovieRepository;
 
 import java.util.ArrayList;
 
@@ -10,8 +12,15 @@ public class MediaController {
     BookRepository bookRepository = new BookRepository();
     ArrayList<Book> books = bookRepository.getBooks();
 
+    MovieRepository movieRepository = new MovieRepository();
+    ArrayList<Movie> movies = movieRepository.getMovies();
+
     public ArrayList<Book> getBooks(){
         return books;
+    }
+
+    public ArrayList<Movie> getMovies(){
+        return movies;
     }
 
     public ArrayList<Book> getAvailableBooks() {
@@ -25,6 +34,17 @@ public class MediaController {
         return availableBooks;
     }
 
+    public ArrayList<Movie> getAvailableMovies() {
+        ArrayList<Movie> availableMovies = new ArrayList<Movie>();
+
+        for (int i = 0; i < movies.size(); i++){
+            if(movies.get(i).getAvailable().equals(true))
+                availableMovies.add(movies.get(i));
+        }
+
+        return availableMovies;
+    }
+
     public ArrayList<Book> getCheckedOutBooks(){
         ArrayList<Book> checkedOutBooks = new ArrayList<Book>();
 
@@ -34,6 +54,17 @@ public class MediaController {
         }
 
         return checkedOutBooks;
+    }
+
+    public ArrayList<Movie> getCheckedOutMovies(){
+        ArrayList<Movie> checkedOutMovies = new ArrayList<Movie>();
+
+        for (int i = 0; i < movies.size(); i++){
+            if(movies.get(i).getAvailable().equals(false))
+                checkedOutMovies.add(movies.get(i));
+        }
+
+        return checkedOutMovies;
     }
 
 

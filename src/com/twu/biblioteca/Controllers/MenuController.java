@@ -1,6 +1,7 @@
 package com.twu.biblioteca.Controllers;
 
 import com.twu.biblioteca.Models.Book;
+import com.twu.biblioteca.Models.Movie;
 import com.twu.biblioteca.Models.Option;
 import com.twu.biblioteca.Repositories.BookRepository;
 
@@ -18,6 +19,10 @@ public class MenuController {
     ArrayList<Book> checkedOutBooks = mediaController.getCheckedOutBooks();
     ArrayList<Option> availableOptions = new ArrayList<Option>();
 
+    ArrayList<Movie> movies = mediaController.getMovies();
+    ArrayList<Movie> moviesToCheckout = mediaController.getAvailableMovies();
+    ArrayList<Movie> checkedOutMovies = mediaController.getCheckedOutMovies();
+
     Boolean programIsRunning = true;
     Boolean isAnswerValid = false;
     Scanner in = new Scanner(System.in);
@@ -30,11 +35,13 @@ public class MenuController {
         Option booksList = new Option(1, "1. List of Books");
         Option checkoutBook = new Option(2, "2. Checkout a Book");
         Option returnABook = new Option(3, "3. Return a Book");
+        Option movieList = new Option(4, "4. List of Movies");
         Option exit = new Option(5, "5. Exit program");
 
         availableOptions.add(booksList);
         availableOptions.add(checkoutBook);
         availableOptions.add(returnABook);
+        availableOptions.add(movieList);
         availableOptions.add(exit);
     }
 
@@ -107,13 +114,13 @@ public class MenuController {
         switch (answer){
             case 1:
                 messageAction = "books:";
-                messageToPrint = listMessage(booksToCheckout, messageAction, true);
+                messageToPrint = listMessage(booksToCheckout, Book.class, messageAction, true);
 
                 System.out.println(messageToPrint);
                 break;
             case 2:
                 messageAction = "books to checkout: ";
-                messageToPrint = listMessage(booksToCheckout, messageAction, true);
+                messageToPrint = listMessage(booksToCheckout, Book.class, messageAction, true);
                 System.out.println(messageToPrint);
 
                 System.out.println("Please select the book code correspondent to the book you want to checkout:");
@@ -124,7 +131,7 @@ public class MenuController {
                 break;
             case 3:
                 messageAction = "current checked out books: ";
-                messageToPrint = listMessage(booksToCheckout, messageAction, false);
+                messageToPrint = listMessage(booksToCheckout, Book.class, messageAction, false);
                 System.out.println(messageToPrint);
 
                 System.out.println("\nPlease inform the code of the book you want to return: ");
@@ -133,6 +140,14 @@ public class MenuController {
                 processOutput = returningBookProcess(bookCodeToReturn);
                 System.out.println(processOutput);
                 break;
+
+            case 4:
+                messageAction = "movies: ";
+                messageToPrint = listMessage(movies, Movie.class, messageAction, true);
+
+                System.out.println(messageToPrint);
+                break;
+
             case 5:
                 programIsRunning = false;
                 System.out.println("Exiting the program...");
@@ -143,12 +158,20 @@ public class MenuController {
         }
     }
 
-    public String listMessage(ArrayList<Book> list, String messageAction, Boolean isAvailable){
+    public String listMessage(ArrayList<?> list, Class<?> tClass, String messageAction, Boolean isAvailable){
+
+        Class<?> myClassType = tClass;
+
+        if(tClass == Movie.class)
+            list = (ArrayList<Book>) list;
+        else
+            list = (ArrayList<Movie>) list;
+
         String message = "List of " + messageAction + "\n";
         Boolean isListEmpty = checkingIfListIsEmpty(list);
 
         if(!isListEmpty)
-            return message + returnListOfBooks(isAvailable);
+            return message + returnListOfMedia(isAvailable, tClass);
 
         return message + "Nothing to show. List empty!";
 
@@ -180,25 +203,50 @@ public class MenuController {
         return "That is not a valid book to return.";
     }
 
-    public Boolean checkingIfListIsEmpty(ArrayList<Book> list){
+    public Boolean checkingIfListIsEmpty(ArrayList<?> list){
         return list.isEmpty();
     }
 
-    public String returnListOfBooks(Boolean isAvailable){
-        String listOfBooksToCheckOut = "";
-        String listOfBookCheckedOut = "";
+    public String returnListOfMedia(Boolean isAvailable, Class<?> tClass){
+        String listOfMedia = "";
 
-        if(isAvailable){
-            for (Book book : booksToCheckout) {
-                listOfBooksToCheckOut += ("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased() + "\n");
-            }
-            return listOfBooksToCheckOut;
+        int myTypeFlag = 0;
+
+        if(tClass.equals(Movie.class))
+            myTypeFlag = 1;
+
+        switch (myTypeFlag){
+            case 0:
+
+                if(isAvailable){
+                    for (Book book : booksToCheckout) {
+                        listOfMedia += ("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased() + "\n");
+                    }
+
+                    break;
+                }
+
+                for (Book book : checkedOutBooks) {
+                    listOfMedia += ("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased() + "\n");
+                }
+            break;
+
+            case 1:
+
+                if(isAvailable){
+                    for(Movie movie : moviesToCheckout)
+                        listOfMedia += ("Movie Code: " + movie.getId() + " | " + "Name: " + movie.getName() + " | Director: " + movie.getDirector() + " \n");
+                    break;
+                }
+
+                for(Movie movie : checkedOutMovies)
+                    listOfMedia += ("Movie Code: " + movie.getId() + " | " + "Name: " + movie.getName() + " | Director: " + movie.getDirector() + " \n");
+
+            break;
         }
 
-        for(Book book : checkedOutBooks){
-            listOfBookCheckedOut += ("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased() + "\n");
-        }
-        return listOfBookCheckedOut;
+        return listOfMedia;
+
     }
 
     public String GettingErrorMessageWhenInvalidOptionChosen() {
