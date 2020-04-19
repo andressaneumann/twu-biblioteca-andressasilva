@@ -21,7 +21,7 @@ public class MovieRepository {
         Movie inception = new Movie(1, "Inception", "Christopher Nolan", 10, true);
         Movie pulpFiction = new Movie(2, "Pulp Fiction", "Quentin Tarantino", 10, true);
         Movie avatar = new Movie(3, "Avatar", "James Cameron", 7, true);
-        Movie toyStory = new Movie(4, "Toy Story", "John Lasseter", 5, false);
+        Movie toyStory = new Movie(4, "Toy Story", "John Lasseter", 0, false);
 
         movies.add(fightClub);
         movies.add(inception);

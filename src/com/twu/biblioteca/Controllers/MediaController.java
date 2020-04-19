@@ -83,4 +83,12 @@ public class MediaController {
         }
     }
 
+    public void checkingOutMovie(int movieCodeToCheckout) {
+
+        for(int i = 0; i < movies.size(); i++){
+            if(movies.get(i).getId() == movieCodeToCheckout)
+                movieRepository.updateMovieAvailableStatus(movieCodeToCheckout, false);
+        }
+    }
+
 }

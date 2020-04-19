@@ -36,19 +36,21 @@ public class MenuController {
         Option checkoutBook = new Option(2, "2. Checkout a Book");
         Option returnABook = new Option(3, "3. Return a Book");
         Option movieList = new Option(4, "4. List of Movies");
-        Option exit = new Option(5, "5. Exit program");
+        Option checkoutAMovie = new Option(5,"5. Checkout a Movie");
+        Option exit = new Option(6, "6. Exit program");
 
         availableOptions.add(booksList);
         availableOptions.add(checkoutBook);
         availableOptions.add(returnABook);
         availableOptions.add(movieList);
+        availableOptions.add(checkoutAMovie);
         availableOptions.add(exit);
     }
 
     public void main() {
 
         while (programIsRunning) {
-            updateBookLists();
+            updatingLists();
             System.out.println("\nPlease choose between the available options and press the respective number: ");
 
             printMenuOptions();
@@ -87,22 +89,44 @@ public class MenuController {
         return optionFound;
     }
 
-    public Boolean checkingIfBookCodeIsValid(int bookCode, Boolean isAvailable) {
+    public Boolean checkingIfMediaCodeIsValid(int mediaCode, Boolean isAvailable, Class<?> tClass) {
         Boolean codeFound = false;
 
-        if(isAvailable){
-            for(Book book : booksToCheckout){
-                if(book.getId() == bookCode)
-                    codeFound = true;
-            }
-            return codeFound;
+        int myTypeFlag = flaggingMediaType(tClass);
+
+        switch (myTypeFlag){
+            case 0:
+                if(isAvailable){
+                    for(Book book : booksToCheckout){
+                        if(book.getId() == mediaCode)
+                            codeFound = true;
+                    }
+                    return codeFound;
+                }
+
+                for(Book book : checkedOutBooks){
+                    if(book.getId() == mediaCode)
+                        codeFound = true;
+                }
+                break;
+
+            case 1:
+                if(isAvailable){
+                    for(Movie movie : moviesToCheckout){
+                        if(movie.getId() == mediaCode)
+                            codeFound = true;
+                    }
+                }
+
+                for(Movie movie : checkedOutMovies){
+                    if(movie.getId() == mediaCode)
+                        codeFound = true;
+                }
+                break;
         }
 
-        for(Book book : checkedOutBooks){
-            if(book.getId() == bookCode)
-                codeFound = true;
-        }
         return codeFound;
+
     }
 
     public void userAction(int answer){
@@ -126,7 +150,7 @@ public class MenuController {
                 System.out.println("Please select the book code correspondent to the book you want to checkout:");
                 int bookCodeToCheckout = readingIntegerOutput();
 
-                processOutput = checkoutProcess(bookCodeToCheckout);
+                processOutput = checkoutProcess(bookCodeToCheckout, Book.class);
                 System.out.println(processOutput);
                 break;
             case 3:
@@ -142,13 +166,24 @@ public class MenuController {
                 break;
 
             case 4:
-                messageAction = "movies: ";
+                messageAction = "movies:";
                 messageToPrint = listMessage(movies, Movie.class, messageAction, true);
 
                 System.out.println(messageToPrint);
                 break;
 
             case 5:
+                messageAction = "movies to checkout: ";
+                messageToPrint = listMessage(moviesToCheckout, Movie.class, messageAction, true);
+                System.out.println(messageToPrint);
+
+                System.out.println("Please select the movie code correspondent to the movie you want to checkout:");
+                int movieCodeToCheckout = readingIntegerOutput();
+
+                processOutput = checkoutProcess(movieCodeToCheckout, Movie.class);
+                System.out.println(processOutput);
+                break;
+            case 6:
                 programIsRunning = false;
                 System.out.println("Exiting the program...");
                 System.exit(0);
@@ -158,14 +193,26 @@ public class MenuController {
         }
     }
 
+    public ArrayList<?> castingListType(ArrayList<?> list, Class<?> tClass){
+        if(tClass == Movie.class){
+            list = (ArrayList<Book>) list;
+            return list;
+        }
+
+        list = (ArrayList<Movie>) list;
+        return list;
+    }
+
+    public int flaggingMediaType(Class<?> tClass){
+        if(tClass.equals(Book.class))
+            return 0;
+
+        return 1;
+    }
+
     public String listMessage(ArrayList<?> list, Class<?> tClass, String messageAction, Boolean isAvailable){
 
-        Class<?> myClassType = tClass;
-
-        if(tClass == Movie.class)
-            list = (ArrayList<Book>) list;
-        else
-            list = (ArrayList<Movie>) list;
+        list = castingListType(list, tClass);
 
         String message = "List of " + messageAction + "\n";
         Boolean isListEmpty = checkingIfListIsEmpty(list);
@@ -177,24 +224,44 @@ public class MenuController {
 
     }
 
-    public void updateBookLists(){
+    public void updatingLists(){
         booksToCheckout = mediaController.getAvailableBooks();
         checkedOutBooks = mediaController.getCheckedOutBooks();
+        moviesToCheckout = mediaController.getAvailableMovies();
+        checkedOutMovies = mediaController.getCheckedOutMovies();
     }
 
-    public String checkoutProcess(int bookCodeToCheckout){
-        Boolean isBookAvailable = checkingIfBookCodeIsValid(bookCodeToCheckout, true);
+    public String checkoutProcess(int mediaCodeToCheckout, Class<?> tClass){
+        String output = "";
+        Boolean isMediaAvailable = checkingIfMediaCodeIsValid(mediaCodeToCheckout, true, tClass);
 
-        if(isBookAvailable){
-            mediaController.checkingOutBook(bookCodeToCheckout);
-            return "Thank you! Enjoy the book!";
+        int myTypeFlag = flaggingMediaType(tClass);
+
+        switch (myTypeFlag){
+            case 0:
+                if(isMediaAvailable){
+                    mediaController.checkingOutBook(mediaCodeToCheckout);
+                    output = "Thank you! Enjoy the book!";
+                    break;
+                }
+                output =  "Sorry, that book is not available!";
+                break;
+
+            case 1:
+                if(isMediaAvailable){
+                    mediaController.checkingOutMovie(mediaCodeToCheckout);
+                    output = "Thank you! Enjoy the movie!";
+                    break;
+                }
+                output =  "Sorry, that movie is not available!";
+                break;
         }
 
-        return "Sorry, that book is not available!";
+        return output;
     }
 
     public String returningBookProcess(int bookCodeToReturn){
-        Boolean isBookAvailable = checkingIfBookCodeIsValid(bookCodeToReturn, false);
+        Boolean isBookAvailable = checkingIfMediaCodeIsValid(bookCodeToReturn, false, Book.class);
 
         if(isBookAvailable){
             mediaController.returningBook(bookCodeToReturn);
@@ -210,10 +277,7 @@ public class MenuController {
     public String returnListOfMedia(Boolean isAvailable, Class<?> tClass){
         String listOfMedia = "";
 
-        int myTypeFlag = 0;
-
-        if(tClass.equals(Movie.class))
-            myTypeFlag = 1;
+        int myTypeFlag = flaggingMediaType(tClass);
 
         switch (myTypeFlag){
             case 0:
@@ -235,12 +299,12 @@ public class MenuController {
 
                 if(isAvailable){
                     for(Movie movie : moviesToCheckout)
-                        listOfMedia += ("Movie Code: " + movie.getId() + " | " + "Name: " + movie.getName() + " | Director: " + movie.getDirector() + " \n");
+                        listOfMedia += ("Movie Code: " + movie.getId() + " | Name: " + movie.getName() + " | Director: " + movie.getDirector() + " | Rating: " + movie.getRating() + "\n");
                     break;
                 }
 
                 for(Movie movie : checkedOutMovies)
-                    listOfMedia += ("Movie Code: " + movie.getId() + " | " + "Name: " + movie.getName() + " | Director: " + movie.getDirector() + " \n");
+                    listOfMedia += ("Movie Code: " + movie.getId() + " | Name: " + movie.getName() + " | Director: " + movie.getDirector() + " | Rating: " + movie.getRating() + "\n");
 
             break;
         }

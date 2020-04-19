@@ -43,47 +43,87 @@ public class MenuControllerTests {
     }
 
     @Test
-    public void checkingIfBookCodeIsValid_WhenAValidBookToCheckoutIsSend_ReturnsTrue(){
+    public void checkingIfMediaCodeIsValid_WhenAValidBookToCheckoutIsSend_ReturnsTrue(){
         int bookCode = 1;
         Boolean isAvailable = true;
 
-        Boolean response = menuController.checkingIfBookCodeIsValid(bookCode, isAvailable);
+        Boolean response = menuController.checkingIfMediaCodeIsValid(bookCode, isAvailable, Book.class);
 
         assertThat(response, is(equalTo(true)));
     }
 
     @Test
-    public void checkingIfBookCodeIsValid_WhenAInvalidBookToCheckoutIsSend_ReturnsFalse(){
+    public void checkingIfMediaCodeIsValid_WhenAValidMovieToCheckoutIsSend_ReturnsTrue(){
+        int movieCode = 1;
+        Boolean isAvailable = true;
+
+        Boolean response = menuController.checkingIfMediaCodeIsValid(movieCode, isAvailable, Movie.class);
+
+        assertThat(response, is(equalTo(true)));
+    }
+
+    @Test
+    public void checkingIfMediaCodeIsValid_WhenAInvalidBookToCheckoutIsSend_ReturnsFalse(){
         int bookCode = 10;
         Boolean isAvailable = true;
 
-        Boolean response = menuController.checkingIfBookCodeIsValid(bookCode, isAvailable);
+        Boolean response = menuController.checkingIfMediaCodeIsValid(bookCode, isAvailable, Book.class);
 
         assertThat(response, is(equalTo(false)));
     }
 
     @Test
-    public void checkingIfBookCodeIsValid_WhenAValidBookToReturnIsSend_ReturnsTrue(){
+    public void checkingIfMediaCodeIsValid_WhenAInvalidMovieToCheckoutIsSend_ReturnsFalse(){
+        int movieCode = 10;
+        Boolean isAvailable = true;
+
+        Boolean response = menuController.checkingIfMediaCodeIsValid(movieCode, isAvailable, Movie.class);
+
+        assertThat(response, is(equalTo(false)));
+    }
+
+    @Test
+    public void checkingIfMediaCodeIsValid_WhenAValidBookToReturnIsSend_ReturnsTrue(){
         int bookCode = 4;
         Boolean isAvailable = false;
 
-        Boolean response = menuController.checkingIfBookCodeIsValid(bookCode, isAvailable);
+        Boolean response = menuController.checkingIfMediaCodeIsValid(bookCode, isAvailable, Book.class);
 
         assertThat(response, is(equalTo(true)));
     }
 
     @Test
-    public void checkingIfBookCodeIsValid_WhenAInvalidBookToReturnIsSend_ReturnsFalse(){
+    public void checkingIfMediaCodeIsValid_WhenAValidMovieToReturnIsSend_ReturnsTrue(){
+        int movieCode = 4;
+        Boolean isAvailable = false;
+
+        Boolean response = menuController.checkingIfMediaCodeIsValid(movieCode, isAvailable, Movie.class);
+
+        assertThat(response, is(equalTo(true)));
+    }
+
+    @Test
+    public void checkingIfMediaCodeIsValid_WhenAInvalidBookToReturnIsSend_ReturnsFalse(){
         int bookCode = 15;
         Boolean isAvailable = false;
 
-        Boolean response = menuController.checkingIfBookCodeIsValid(bookCode, isAvailable);
+        Boolean response = menuController.checkingIfMediaCodeIsValid(bookCode, isAvailable, Book.class);
 
         assertThat(response, is(equalTo(false)));
     }
 
     @Test
-    public void listMessage_WhenAEmptyListIsSend_ReturnsNothingToShow(){
+    public void checkingIfMediaCodeIsValid_WhenAInvalidMovieToReturnIsSend_ReturnsFalse(){
+        int movieCode = 15;
+        Boolean isAvailable = false;
+
+        Boolean response = menuController.checkingIfMediaCodeIsValid(movieCode, isAvailable, Movie.class);
+
+        assertThat(response, is(equalTo(false)));
+    }
+
+    @Test
+    public void listMessage_WhenAnEmptyBookListIsSend_ReturnsNothingToShow(){
         ArrayList<Book> emptyList = new ArrayList<Book>();
         String messageAction = "books:";
         String expectedOutput = "List of books:\nNothing to show. List empty!";
@@ -94,7 +134,18 @@ public class MenuControllerTests {
     }
 
     @Test
-    public void listMessage_WhenAValidAvailableBookListIsSend_ReturnsBooksAvailableToBook(){
+    public void listMessage_WhenAnEmptyMovieListIsSend_ReturnsNothingToShow(){
+        ArrayList<Movie> emptyList = new ArrayList<Movie>();
+        String messageAction = "movies:";
+        String expectedOutput = "List of movies:\nNothing to show. List empty!";
+
+        String realOutput = menuController.listMessage(emptyList, Movie.class, messageAction, true);
+
+        assertThat(expectedOutput, is(equalTo(realOutput)));
+    }
+
+    @Test
+    public void listMessage_WhenAValidAvailableBookListIsSend_ReturnsBooksAvailableToCheckout(){
         ArrayList<Book> availableBooks = mediaController.getAvailableBooks();
         String messageAction = "books:";
         String expectedOutput = "List of books:\nBook Code: 0 | Title: Hamlet | Author: William Shakespeare | Publication Year: 1603\n" +
@@ -103,6 +154,21 @@ public class MenuControllerTests {
                 "Book Code: 3 | Title: The Alchemist | Author: Paulo Coelho | Publication Year: 1988\n";
 
         String realOutput = menuController.listMessage(availableBooks,Book.class, messageAction, true);
+
+        assertThat(expectedOutput, is(equalTo(realOutput)));
+    }
+
+    @Test
+    public void listMessage_WhenAValidAvailableMovieListIsSend_ReturnsMoviesAvailableToCheckout(){
+        ArrayList<Movie> availableMovies = mediaController.getAvailableMovies();
+        String messageAction = "movies:";
+        String expectedOutput = "List of movies:\n" +
+                "Movie Code: 0 | Name: Fight Club | Director: David Fincher | Rating: 10\n" +
+                "Movie Code: 1 | Name: Inception | Director: Christopher Nolan | Rating: 10\n" +
+                "Movie Code: 2 | Name: Pulp Fiction | Director: Quentin Tarantino | Rating: 10\n" +
+                "Movie Code: 3 | Name: Avatar | Director: James Cameron | Rating: 7\n";
+
+        String realOutput = menuController.listMessage(availableMovies,Movie.class, messageAction, true);
 
         assertThat(expectedOutput, is(equalTo(realOutput)));
     }
@@ -119,12 +185,25 @@ public class MenuControllerTests {
         assertThat(expectedOutput, is(equalTo(realOutput)));
     }
 
+    //Movies to return - to implement
+//    @Test
+//    public void listMessage_WhenAValidAvailableCheckoutMovieListIsSend_ReturnsMoviesToReturn(){
+//        ArrayList<Movie> checkedOutMovies = mediaController.getCheckedOutMovies();
+//        String messageAction = "current checked out movies: ";
+//        String expectedOutput = "List of current checked out movies: \n" +
+//                "Book Code: 4 | Title: The Great Gatsby | Author: Scott Fitzgerald | Publication Year: 1925\n";
+//
+//        String realOutput = menuController.listMessage(checkedOutBooks,Book.class, messageAction, false);
+//
+//        assertThat(expectedOutput, is(equalTo(realOutput)));
+//    }
+
     @Test
     public void checkoutProcess_WhenAValidBookCodeIsSend_ChecksOutTheBook(){
         int bookCodeToCheckOut = 0;
         String expectedOutput = "Thank you! Enjoy the book!";
 
-        String realOutput = menuController.checkoutProcess(bookCodeToCheckOut);
+        String realOutput = menuController.checkoutProcess(bookCodeToCheckOut, Book.class);
 
         assertThat(expectedOutput, is(equalTo(realOutput)));
     }
@@ -134,7 +213,7 @@ public class MenuControllerTests {
         int bookCodeToCheckOut = 10;
         String expectedOutput = "Sorry, that book is not available!";
 
-        String realOutput = menuController.checkoutProcess(bookCodeToCheckOut);
+        String realOutput = menuController.checkoutProcess(bookCodeToCheckOut, Book.class);
 
         assertThat(expectedOutput, is(equalTo(realOutput)));
     }
