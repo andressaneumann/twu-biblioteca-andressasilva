@@ -14,12 +14,10 @@ public class MenuController {
 
     MediaController mediaController = new MediaController();
 
-    ArrayList<Book> books = mediaController.getBooks();
     ArrayList<Book> booksToCheckout = mediaController.getAvailableBooks();
     ArrayList<Book> checkedOutBooks = mediaController.getCheckedOutBooks();
     ArrayList<Option> availableOptions = new ArrayList<Option>();
 
-    ArrayList<Movie> movies = mediaController.getMovies();
     ArrayList<Movie> moviesToCheckout = mediaController.getAvailableMovies();
     ArrayList<Movie> checkedOutMovies = mediaController.getCheckedOutMovies();
 
@@ -92,9 +90,9 @@ public class MenuController {
     public Boolean checkingIfMediaCodeIsValid(int mediaCode, Boolean isAvailable, Class<?> tClass) {
         Boolean codeFound = false;
 
-        int myTypeFlag = flaggingMediaType(tClass);
+        int mediaTypeFlag = flaggingMediaType(tClass);
 
-        switch (myTypeFlag){
+        switch (mediaTypeFlag){
             case 0:
                 if(isAvailable){
                     for(Book book : booksToCheckout){
@@ -126,10 +124,10 @@ public class MenuController {
         }
 
         return codeFound;
-
     }
 
     public void userAction(int answer){
+        Boolean isListEmpty;
 
         String messageAction = "";
         String messageToPrint = "";
@@ -137,51 +135,82 @@ public class MenuController {
 
         switch (answer){
             case 1:
-                messageAction = "books:";
-                messageToPrint = listMessage(booksToCheckout, Book.class, messageAction, true);
+                isListEmpty = checkingIfListIsEmpty(booksToCheckout);
 
-                System.out.println(messageToPrint);
+                if(!isListEmpty){
+                    messageAction = "books:";
+                    messageToPrint = listMessage(booksToCheckout, Book.class, messageAction, true);
+
+                    System.out.println(messageToPrint);
+                    break;
+                }
+                System.out.println("Nothing to show, list is empty!");
                 break;
             case 2:
-                messageAction = "books to checkout: ";
-                messageToPrint = listMessage(booksToCheckout, Book.class, messageAction, true);
-                System.out.println(messageToPrint);
+                isListEmpty = checkingIfListIsEmpty(booksToCheckout);
 
-                System.out.println("Please select the book code correspondent to the book you want to checkout:");
-                int bookCodeToCheckout = readingIntegerOutput();
+                if(!isListEmpty){
+                    messageAction = "books to checkout: ";
+                    messageToPrint = listMessage(booksToCheckout, Book.class, messageAction, true);
+                    System.out.println(messageToPrint);
 
-                processOutput = checkoutProcess(bookCodeToCheckout, Book.class);
-                System.out.println(processOutput);
+                    System.out.println("Please select the book code correspondent to the book you want to checkout:");
+                    int bookCodeToCheckout = readingIntegerOutput();
+
+                    processOutput = checkoutProcess(bookCodeToCheckout, Book.class);
+                    System.out.println(processOutput);
+
+                    break;
+                }
+                System.out.println("Nothing to show, list is empty!");
                 break;
             case 3:
-                messageAction = "current checked out books: ";
-                messageToPrint = listMessage(booksToCheckout, Book.class, messageAction, false);
-                System.out.println(messageToPrint);
+                isListEmpty = checkingIfListIsEmpty(checkedOutBooks);
 
-                System.out.println("\nPlease inform the code of the book you want to return: ");
-                int bookCodeToReturn = readingIntegerOutput();
+                if(!isListEmpty){
+                    messageAction = "current checked out books: ";
+                    messageToPrint = listMessage(checkedOutBooks, Book.class, messageAction, false);
+                    System.out.println(messageToPrint);
 
-                processOutput = returningBookProcess(bookCodeToReturn);
-                System.out.println(processOutput);
+                    System.out.println("\nPlease inform the code of the book you want to return: ");
+                    int bookCodeToReturn = readingIntegerOutput();
+
+                    processOutput = returningBookProcess(bookCodeToReturn);
+                    System.out.println(processOutput);
+                    break;
+                }
+                System.out.println("Nothing to show, list is empty!");
                 break;
 
             case 4:
-                messageAction = "movies:";
-                messageToPrint = listMessage(movies, Movie.class, messageAction, true);
+                isListEmpty = checkingIfListIsEmpty(moviesToCheckout);
 
-                System.out.println(messageToPrint);
+                if(!isListEmpty){
+                    messageAction = "movies:";
+                    messageToPrint = listMessage(moviesToCheckout, Movie.class, messageAction, true);
+
+                    System.out.println(messageToPrint);
+                    break;
+                }
+                System.out.println("Nothing to show, list is empty!");
                 break;
 
             case 5:
-                messageAction = "movies to checkout: ";
-                messageToPrint = listMessage(moviesToCheckout, Movie.class, messageAction, true);
-                System.out.println(messageToPrint);
+                isListEmpty = checkingIfListIsEmpty(moviesToCheckout);
 
-                System.out.println("Please select the movie code correspondent to the movie you want to checkout:");
-                int movieCodeToCheckout = readingIntegerOutput();
+                if(!isListEmpty){
+                    messageAction = "movies to checkout: ";
+                    messageToPrint = listMessage(moviesToCheckout, Movie.class, messageAction, true);
+                    System.out.println(messageToPrint);
 
-                processOutput = checkoutProcess(movieCodeToCheckout, Movie.class);
-                System.out.println(processOutput);
+                    System.out.println("Please select the movie code correspondent to the movie you want to checkout:");
+                    int movieCodeToCheckout = readingIntegerOutput();
+
+                    processOutput = checkoutProcess(movieCodeToCheckout, Movie.class);
+                    System.out.println(processOutput);
+                    break;
+                }
+                System.out.println("Nothing to show, list is empty!");
                 break;
             case 6:
                 programIsRunning = false;
@@ -211,17 +240,10 @@ public class MenuController {
     }
 
     public String listMessage(ArrayList<?> list, Class<?> tClass, String messageAction, Boolean isAvailable){
-
         list = castingListType(list, tClass);
-
         String message = "List of " + messageAction + "\n";
-        Boolean isListEmpty = checkingIfListIsEmpty(list);
 
-        if(!isListEmpty)
-            return message + returnListOfMedia(isAvailable, tClass);
-
-        return message + "Nothing to show. List empty!";
-
+        return message + returnListOfMedia(isAvailable, tClass);
     }
 
     public void updatingLists(){
@@ -235,9 +257,9 @@ public class MenuController {
         String output = "";
         Boolean isMediaAvailable = checkingIfMediaCodeIsValid(mediaCodeToCheckout, true, tClass);
 
-        int myTypeFlag = flaggingMediaType(tClass);
+        int mediaTypeFlag = flaggingMediaType(tClass);
 
-        switch (myTypeFlag){
+        switch (mediaTypeFlag){
             case 0:
                 if(isMediaAvailable){
                     mediaController.checkingOutBook(mediaCodeToCheckout);
@@ -277,16 +299,15 @@ public class MenuController {
     public String returnListOfMedia(Boolean isAvailable, Class<?> tClass){
         String listOfMedia = "";
 
-        int myTypeFlag = flaggingMediaType(tClass);
+        int mediaTypeFlag = flaggingMediaType(tClass);
 
-        switch (myTypeFlag){
+        switch (mediaTypeFlag){
             case 0:
 
                 if(isAvailable){
                     for (Book book : booksToCheckout) {
                         listOfMedia += ("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased() + "\n");
                     }
-
                     break;
                 }
 

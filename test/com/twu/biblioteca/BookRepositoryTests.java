@@ -23,12 +23,34 @@ public class BookRepositoryTests {
     }
 
     @Test
-    public void GetBooks_ComparingToAnEmptyList_AssertsNotEquals(){
+    public void getBooks_ComparingToAnEmptyList_AssertsNotEquals(){
 
         ArrayList<Book> emptyBookList = new ArrayList<Book>();
         ArrayList<Book> allBooks = bookRepository.getBooks();
 
         assertNotEquals(emptyBookList, allBooks);
+    }
+
+    @Test
+    public void updateBookAvailableStatus_FromTrueToFalse_ReturnsFalse(){
+        int bookCodeToBeUpdated = 0;
+        Boolean newStatus = false;
+
+        ArrayList<Book> books = bookRepository.getBooks();
+        bookRepository.updateBookAvailableStatus(bookCodeToBeUpdated, newStatus);
+
+        assertThat(books.get(bookCodeToBeUpdated).getAvailable(), is(equalTo(false)));
+    }
+
+    @Test
+    public void updateBookAvailableStatus_FromFalseToTrue_ReturnsTrue(){
+        int bookCodeToBeUpdated = 4;
+        Boolean newStatus = true;
+
+        ArrayList<Book> books = bookRepository.getBooks();
+        bookRepository.updateBookAvailableStatus(bookCodeToBeUpdated, newStatus);
+
+        assertThat(books.get(bookCodeToBeUpdated).getAvailable(), is(equalTo(true)));
     }
 
 }
