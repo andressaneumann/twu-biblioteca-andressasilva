@@ -185,19 +185,6 @@ public class MenuControllerTests {
         assertThat(expectedOutput, is(equalTo(realOutput)));
     }
 
-    //Movies to return - to implement
-//    @Test
-//    public void listMessage_WhenAValidAvailableCheckoutMovieListIsSend_ReturnsMoviesToReturn(){
-//        ArrayList<Movie> checkedOutMovies = mediaController.getCheckedOutMovies();
-//        String messageAction = "current checked out movies: ";
-//        String expectedOutput = "List of current checked out movies: \n" +
-//                "Book Code: 4 | Title: The Great Gatsby | Author: Scott Fitzgerald | Publication Year: 1925\n";
-//
-//        String realOutput = menuController.listMessage(checkedOutBooks,Book.class, messageAction, false);
-//
-//        assertThat(expectedOutput, is(equalTo(realOutput)));
-//    }
-
     @Test
     public void checkoutProcess_WhenAValidBookCodeIsSend_ChecksOutTheBook(){
         int bookCodeToCheckOut = 0;
@@ -254,6 +241,27 @@ public class MenuControllerTests {
         Boolean output = menuController.checkingIfListIsEmpty(populatedList);
 
         assertThat(output, is(equalTo(false)));
+    }
+
+    @Test
+    public void returnStringOfMenuOptions_IfUserIsLoggedIn_ReturnsAllOptions(){
+        Boolean isUseLoggedIn = true;
+
+        String menuOptions = menuController.returnStringOfMenuOptions(isUseLoggedIn);
+        String expectedMenuOptions = "1. Login\n2. List of Books\n3. Checkout a Book\n" +
+                "4. Return a Book\n5. List of Movies\n6. Checkout a Movie\n7. Exit program\n";
+
+        assertThat(menuOptions, is(equalTo(expectedMenuOptions)));
+    }
+
+    @Test
+    public void returnStringOfMenuOptions_IfUserIsLoggedOut_ReturnsFewerOptions(){
+        Boolean isUseLoggedIn = false;
+
+        String menuOptions = menuController.returnStringOfMenuOptions(isUseLoggedIn);
+        String expectedMenuOptions = "\nIn order to checkout and return books you need to be logged in!\n1. Login\n2. List of Books\n5. List of Movies\n6. Checkout a Movie\n7. Exit program\n";
+
+        assertThat(menuOptions, is(equalTo(expectedMenuOptions)));
     }
 
     @Test

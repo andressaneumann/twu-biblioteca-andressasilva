@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class MenuController {
 
     MediaController mediaController = new MediaController();
+    LoginController loginController = new LoginController();
 
     ArrayList<Book> booksToCheckout = mediaController.getAvailableBooks();
     ArrayList<Book> checkedOutBooks = mediaController.getCheckedOutBooks();
@@ -21,6 +22,7 @@ public class MenuController {
     ArrayList<Movie> moviesToCheckout = mediaController.getAvailableMovies();
     ArrayList<Movie> checkedOutMovies = mediaController.getCheckedOutMovies();
 
+    Boolean isUserLoggedIn = false;
     Boolean programIsRunning = true;
     Boolean isAnswerValid = false;
     Scanner in = new Scanner(System.in);
@@ -30,13 +32,15 @@ public class MenuController {
     }
 
     public void instantiateOptions(){
-        Option booksList = new Option(1, "1. List of Books");
-        Option checkoutBook = new Option(2, "2. Checkout a Book");
-        Option returnABook = new Option(3, "3. Return a Book");
-        Option movieList = new Option(4, "4. List of Movies");
-        Option checkoutAMovie = new Option(5,"5. Checkout a Movie");
-        Option exit = new Option(6, "6. Exit program");
+        Option login = new Option(1, "1. Login", false);
+        Option booksList = new Option(2, "2. List of Books", false);
+        Option checkoutBook = new Option(3, "3. Checkout a Book", true);
+        Option returnABook = new Option(4, "4. Return a Book", true);
+        Option movieList = new Option(5, "5. List of Movies", false);
+        Option checkoutAMovie = new Option(6,"6. Checkout a Movie", false);
+        Option exit = new Option(7, "7. Exit program", false);
 
+        availableOptions.add(login);
         availableOptions.add(booksList);
         availableOptions.add(checkoutBook);
         availableOptions.add(returnABook);
@@ -51,7 +55,8 @@ public class MenuController {
             updatingLists();
             System.out.println("\nPlease choose between the available options and press the respective number: ");
 
-            printMenuOptions();
+            String menuOptions = returnStringOfMenuOptions(isUserLoggedIn);
+            System.out.println(menuOptions);
             int userAnswer = readingIntegerOutput();
             isAnswerValid = checkingIfMenuInputIsValid(userAnswer);
 
@@ -60,9 +65,24 @@ public class MenuController {
         }
     }
 
-    public void printMenuOptions(){
-        for (int i = 0; i < availableOptions.size(); i++)
-            System.out.println(availableOptions.get(i).getName());
+    public String returnStringOfMenuOptions(Boolean isUserLoggedIn){
+        String menuOptions = "";
+
+        if(isUserLoggedIn){
+            for (int i = 0; i < availableOptions.size(); i++)
+                menuOptions += availableOptions.get(i).getName() + "\n";
+
+            return menuOptions;
+        }
+
+        menuOptions += "\nIn order to checkout and return books you need to be logged in!\n";
+
+        for(int i = 0; i<availableOptions.size(); i++){
+            if(availableOptions.get(i).getUserNeedsToBeLoggedInToAccessOption().equals(false))
+                menuOptions += availableOptions.get(i).getName() + "\n";
+        }
+
+        return menuOptions;
     }
 
     public int readingIntegerOutput(){
@@ -135,6 +155,16 @@ public class MenuController {
 
         switch (answer){
             case 1:
+                isUserLoggedIn = loginController.main();
+
+                if(isUserLoggedIn){
+                    System.out.println("User logged in!");
+                    break;
+                }
+
+                System.out.println("Login failed.");
+                break;
+            case 2:
                 isListEmpty = checkingIfListIsEmpty(booksToCheckout);
 
                 if(!isListEmpty){
@@ -146,7 +176,7 @@ public class MenuController {
                 }
                 System.out.println("Nothing to show, list is empty!");
                 break;
-            case 2:
+            case 3:
                 isListEmpty = checkingIfListIsEmpty(booksToCheckout);
 
                 if(!isListEmpty){
@@ -164,7 +194,7 @@ public class MenuController {
                 }
                 System.out.println("Nothing to show, list is empty!");
                 break;
-            case 3:
+            case 4:
                 isListEmpty = checkingIfListIsEmpty(checkedOutBooks);
 
                 if(!isListEmpty){
@@ -182,7 +212,7 @@ public class MenuController {
                 System.out.println("Nothing to show, list is empty!");
                 break;
 
-            case 4:
+            case 5:
                 isListEmpty = checkingIfListIsEmpty(moviesToCheckout);
 
                 if(!isListEmpty){
@@ -195,7 +225,7 @@ public class MenuController {
                 System.out.println("Nothing to show, list is empty!");
                 break;
 
-            case 5:
+            case 6:
                 isListEmpty = checkingIfListIsEmpty(moviesToCheckout);
 
                 if(!isListEmpty){
@@ -212,7 +242,7 @@ public class MenuController {
                 }
                 System.out.println("Nothing to show, list is empty!");
                 break;
-            case 6:
+            case 7:
                 programIsRunning = false;
                 System.out.println("Exiting the program...");
                 System.exit(0);

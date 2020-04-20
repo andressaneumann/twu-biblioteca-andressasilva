@@ -2,28 +2,37 @@ package com.twu.biblioteca.Models;
 
 public class Option {
 
-    private int Id;
-    private String Name;
+    private int id;
+    private String name;
+    private Boolean userNeedsToBeLoggedInToAccessOption;
 
-
-    public int getId() {
-        return Id;
+    public Option(int id, String name, Boolean userNeedsToBeLoggedInToAccessOption) {
+        this.id = id;
+        this.name = name;
+        this.userNeedsToBeLoggedInToAccessOption = userNeedsToBeLoggedInToAccessOption;
     }
 
-    public Option(int id, String name) {
-        Id = id;
-        Name = name;
+    public int getId() {
+        return id;
     }
 
     public void setId(int id) {
-        Id = id;
+        this.id = id;
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
+    }
+
+    public Boolean getUserNeedsToBeLoggedInToAccessOption() {
+        return userNeedsToBeLoggedInToAccessOption;
+    }
+
+    public void setUserNeedsToBeLoggedInToAccessOption(Boolean userNeedsToBeLoggedInToAccessOption) {
+        this.userNeedsToBeLoggedInToAccessOption = userNeedsToBeLoggedInToAccessOption;
     }
 }
