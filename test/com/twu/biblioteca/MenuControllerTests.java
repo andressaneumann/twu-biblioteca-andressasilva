@@ -4,12 +4,14 @@ import com.twu.biblioteca.Controllers.MediaController;
 import com.twu.biblioteca.Controllers.MenuController;
 import com.twu.biblioteca.Models.Book;
 import com.twu.biblioteca.Models.Movie;
+import com.twu.biblioteca.Models.User;
 import com.twu.biblioteca.Repositories.BookRepository;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
@@ -120,6 +122,23 @@ public class MenuControllerTests {
         Boolean response = menuController.checkingIfMediaCodeIsValid(movieCode, isAvailable, Movie.class);
 
         assertThat(response, is(equalTo(false)));
+    }
+
+    @Test
+    public void gettingUserInformationFromId_SendingAValidUserId_ReturnsUser(){
+        int userId = 0;
+        User emptyUser = new User();
+        User user = menuController.gettingUserInformationFromId(userId);
+
+        assertNotEquals(user, emptyUser);
+    }
+
+    @Test
+    public void gettingUserInformationFromId_SendingAnInvalidUserId_ReturnsEmptyUser(){
+        int userId = 89;
+        User user = menuController.gettingUserInformationFromId(userId);
+
+        assertThat(user, is(equalTo(null)));
     }
 
     @Test

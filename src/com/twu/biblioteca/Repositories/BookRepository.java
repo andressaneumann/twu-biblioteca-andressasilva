@@ -16,11 +16,11 @@ public class BookRepository {
 
         books = new ArrayList<Book>(5);
 
-        Book hamlet = new Book(0,"Hamlet", "William Shakespeare", 1603, true);
-        Book firstHarryPotter = new Book (1, "Harry Potter and the Order of the Phoenix", "J. K. Rowling", 2003, true);
-        Book theSilentPatient = new Book (2, "The Silent Patient", "Alex Michaelides", 2019, true);
-        Book theAlchemist = new Book(3, "The Alchemist", "Paulo Coelho", 1988, true);
-        Book theGreatGatsby = new Book(4, "The Great Gatsby", "Scott Fitzgerald", 1925, false);
+        Book hamlet = new Book(0,"Hamlet", "William Shakespeare", 1603, true, null);
+        Book firstHarryPotter = new Book (1, "Harry Potter and the Order of the Phoenix", "J. K. Rowling", 2003, true, null);
+        Book theSilentPatient = new Book (2, "The Silent Patient", "Alex Michaelides", 2019, true, null);
+        Book theAlchemist = new Book(3, "The Alchemist", "Paulo Coelho", 1988, true, null);
+        Book theGreatGatsby = new Book(4, "The Great Gatsby", "Scott Fitzgerald", 1925, false, 0);
 
 
         books.add(hamlet);
@@ -33,10 +33,16 @@ public class BookRepository {
     }
 
     public void updateBookAvailableStatus(int id, Boolean status){
-
         for(Book book : books){
             if(book.getId() == id)
                 book.setAvailable(status);
+        }
+    }
+
+    public void updateUserIdOfBooker(int id,Integer userIdOfBooker){
+        for(Book book : books){
+            if(book.getId() == id)
+                book.setUserIdOfBooker(userIdOfBooker);
         }
     }
 }

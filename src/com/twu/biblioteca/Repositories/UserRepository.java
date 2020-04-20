@@ -16,8 +16,8 @@ public class UserRepository {
 
         users = new ArrayList<User>();
 
-        User andressa = new User(0, "000-0001", "Andressa", "123#");
-        User rafael = new User(1, "000-0002", "Rafael", "1234#");
+        User andressa = new User(0, "000-0001", "Andressa", "123#", "neumm.andressa@gmail.com", 981007669);
+        User rafael = new User(1, "000-0002", "Rafael", "1234#", "raf@gmail.com", 123456789);
 
         users.add(andressa);
         users.add(rafael);

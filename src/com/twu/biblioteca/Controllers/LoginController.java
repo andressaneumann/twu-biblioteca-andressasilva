@@ -12,9 +12,10 @@ public class LoginController {
     ArrayList<User> users = userRepository.getUsers();
     Scanner in = new Scanner(System.in);
 
-    public Boolean main(){
+    public int main(){
         String libraryCode = "";
         Boolean doesCodeExist = false;
+        int userId = -1;
 
         while (!doesCodeExist){
             System.out.println("Please inform your library code:");
@@ -29,14 +30,27 @@ public class LoginController {
 
         Boolean isPasswordCorrect = checkingUserPassword(libraryCode, password);
 
-        if(isPasswordCorrect)
-            return true;
+        if(isPasswordCorrect){
+            userId = gettingUserId(libraryCode);
+        }
         else{
-            isPasswordCorrect = threeMorePasswordAttempts(libraryCode);
+            Boolean newAttempt = threeMorePasswordAttempts(libraryCode);
+
+            if(newAttempt)
+                userId = gettingUserId(libraryCode);
+        }
+        return userId;
+    }
+
+    public int gettingUserId(String libraryCode){
+        int userId = -1;
+
+        for(User user : users){
+            if(user.getLibraryNumber().equals(libraryCode))
+                userId = user.getId();
         }
 
-        return isPasswordCorrect;
-
+        return userId;
     }
 
     public String readingUserOutput(){

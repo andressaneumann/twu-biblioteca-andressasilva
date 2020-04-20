@@ -1,9 +1,8 @@
 package com.twu.biblioteca.Controllers;
 
-import com.twu.biblioteca.Models.Book;
-import com.twu.biblioteca.Models.Movie;
-import com.twu.biblioteca.Models.Option;
+import com.twu.biblioteca.Models.*;
 import com.twu.biblioteca.Repositories.BookRepository;
+import com.twu.biblioteca.Repositories.UserRepository;
 
 import java.lang.reflect.Array;
 import java.sql.SQLOutput;
@@ -17,12 +16,15 @@ public class MenuController {
 
     ArrayList<Book> booksToCheckout = mediaController.getAvailableBooks();
     ArrayList<Book> checkedOutBooks = mediaController.getCheckedOutBooks();
+
     ArrayList<Option> availableOptions = new ArrayList<Option>();
 
     ArrayList<Movie> moviesToCheckout = mediaController.getAvailableMovies();
     ArrayList<Movie> checkedOutMovies = mediaController.getCheckedOutMovies();
 
     Boolean isUserLoggedIn = false;
+    int loggedInUserId;
+    User currentUserLoggedIn;
     Boolean programIsRunning = true;
     Boolean isAnswerValid = false;
     Scanner in = new Scanner(System.in);
@@ -33,19 +35,25 @@ public class MenuController {
 
     public void instantiateOptions(){
         Option login = new Option(1, "1. Login", false);
-        Option booksList = new Option(2, "2. List of Books", false);
-        Option checkoutBook = new Option(3, "3. Checkout a Book", true);
-        Option returnABook = new Option(4, "4. Return a Book", true);
-        Option movieList = new Option(5, "5. List of Movies", false);
-        Option checkoutAMovie = new Option(6,"6. Checkout a Movie", false);
-        Option exit = new Option(7, "7. Exit program", false);
+        Option seeMyProfile = new Option(2, "2. See my profile", true);
+        Option booksList = new Option(3, "3. List of Books", false);
+        Option checkoutBook = new Option(4, "4. Checkout a Book", true);
+        Option returnABook = new Option(5, "5. Return a Book", true);
+        Option movieList = new Option(6, "6. List of Movies", false);
+        Option checkoutAMovie = new Option(7,"7. Checkout a Movie", false);
+        Option checkWhoCheckedOutEachBook = new Option(8, "8. Who checked out each book", false);
+
+        Option exit = new Option(9, "9. Exit program", false);
+
 
         availableOptions.add(login);
+        availableOptions.add(seeMyProfile);
         availableOptions.add(booksList);
         availableOptions.add(checkoutBook);
         availableOptions.add(returnABook);
         availableOptions.add(movieList);
         availableOptions.add(checkoutAMovie);
+        availableOptions.add(checkWhoCheckedOutEachBook);
         availableOptions.add(exit);
     }
 
@@ -155,9 +163,10 @@ public class MenuController {
 
         switch (answer){
             case 1:
-                isUserLoggedIn = loginController.main();
+                loggedInUserId = loginController.main();
 
-                if(isUserLoggedIn){
+                if(loggedInUserId >= 0){
+                    isUserLoggedIn = true;
                     System.out.println("User logged in!");
                     break;
                 }
@@ -165,6 +174,15 @@ public class MenuController {
                 System.out.println("Login failed.");
                 break;
             case 2:
+                User currentUser = gettingUserInformationFromId(loggedInUserId);
+
+                System.out.println("My profile: \n");
+                System.out.println("Name: " + currentUser.getName());
+                System.out.println("Email: " + currentUser.getEmail());
+                System.out.println("Phone number: " + currentUser.getPhoneNumber());
+
+                break;
+            case 3:
                 isListEmpty = checkingIfListIsEmpty(booksToCheckout);
 
                 if(!isListEmpty){
@@ -176,7 +194,7 @@ public class MenuController {
                 }
                 System.out.println("Nothing to show, list is empty!");
                 break;
-            case 3:
+            case 4:
                 isListEmpty = checkingIfListIsEmpty(booksToCheckout);
 
                 if(!isListEmpty){
@@ -194,7 +212,7 @@ public class MenuController {
                 }
                 System.out.println("Nothing to show, list is empty!");
                 break;
-            case 4:
+            case 5:
                 isListEmpty = checkingIfListIsEmpty(checkedOutBooks);
 
                 if(!isListEmpty){
@@ -212,7 +230,7 @@ public class MenuController {
                 System.out.println("Nothing to show, list is empty!");
                 break;
 
-            case 5:
+            case 6:
                 isListEmpty = checkingIfListIsEmpty(moviesToCheckout);
 
                 if(!isListEmpty){
@@ -225,7 +243,7 @@ public class MenuController {
                 System.out.println("Nothing to show, list is empty!");
                 break;
 
-            case 6:
+            case 7:
                 isListEmpty = checkingIfListIsEmpty(moviesToCheckout);
 
                 if(!isListEmpty){
@@ -242,7 +260,15 @@ public class MenuController {
                 }
                 System.out.println("Nothing to show, list is empty!");
                 break;
-            case 7:
+            case 8:
+
+                System.out.println("Books booked and the person who has each one:");
+                for(Book book : checkedOutBooks){
+                    System.out.println("Book code: " + book.getId() + " | Book title: " + book.getTitle() + " | Booker: " + gettingUserInformationFromId(book.getUserIdOfBooker()).getName());
+                }
+                break;
+
+            case 9:
                 programIsRunning = false;
                 System.out.println("Exiting the program...");
                 System.exit(0);
@@ -250,6 +276,18 @@ public class MenuController {
             default:
                 System.out.println(GettingErrorMessageWhenInvalidOptionChosen());
         }
+    }
+
+    public User gettingUserInformationFromId(int id){
+        UserRepository userRepository = new UserRepository();
+        ArrayList<User> users = userRepository.getUsers();
+
+        for(User user : users){
+            if(user.getId() == id)
+                return user;
+        }
+
+        return null;
     }
 
     public ArrayList<?> castingListType(ArrayList<?> list, Class<?> tClass){
@@ -292,7 +330,7 @@ public class MenuController {
         switch (mediaTypeFlag){
             case 0:
                 if(isMediaAvailable){
-                    mediaController.checkingOutBook(mediaCodeToCheckout);
+                    mediaController.checkingOutBook(mediaCodeToCheckout, loggedInUserId);
                     output = "Thank you! Enjoy the book!";
                     break;
                 }

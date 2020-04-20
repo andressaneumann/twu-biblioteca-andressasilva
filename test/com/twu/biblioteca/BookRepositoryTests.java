@@ -34,6 +34,7 @@ public class BookRepositoryTests {
     @Test
     public void updateBookAvailableStatus_FromTrueToFalse_ReturnsFalse(){
         int bookCodeToBeUpdated = 0;
+        int loggedInUser = 0;
         Boolean newStatus = false;
 
         ArrayList<Book> books = bookRepository.getBooks();
@@ -45,6 +46,7 @@ public class BookRepositoryTests {
     @Test
     public void updateBookAvailableStatus_FromFalseToTrue_ReturnsTrue(){
         int bookCodeToBeUpdated = 4;
+        int loggedInUser = 0;
         Boolean newStatus = true;
 
         ArrayList<Book> books = bookRepository.getBooks();

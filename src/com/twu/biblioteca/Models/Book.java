@@ -7,13 +7,15 @@ public class Book {
     private String author;
     private int yearReleased;
     private Boolean isAvailable;
+    private Integer userIdOfBooker;
 
-    public Book(int id, String title, String author, int yearReleased, Boolean isAvailable) {
+    public Book(int id, String title, String author, int yearReleased, Boolean isAvailable, Integer userIdOfBooker) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.yearReleased = yearReleased;
         this.isAvailable = isAvailable;
+        this.userIdOfBooker = userIdOfBooker;
     }
 
     public int getId() {
@@ -54,5 +56,13 @@ public class Book {
 
     public void setAvailable(Boolean available) {
         isAvailable = available;
+    }
+
+    public Integer getUserIdOfBooker() {
+        return userIdOfBooker;
+    }
+
+    public void setUserIdOfBooker(Integer userIdOfBooker) {
+        this.userIdOfBooker = userIdOfBooker;
     }
 }

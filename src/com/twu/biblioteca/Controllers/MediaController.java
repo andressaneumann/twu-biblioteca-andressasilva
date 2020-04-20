@@ -68,11 +68,14 @@ public class MediaController {
     }
 
 
-    public void checkingOutBook(int bookCodeToCheckout) {
+    public void checkingOutBook(int bookCodeToCheckout, Integer loggedInUserId) {
 
         for(int i = 0; i < books.size(); i++){
-            if(books.get(i).getId() == bookCodeToCheckout)
+            if(books.get(i).getId() == bookCodeToCheckout){
                 bookRepository.updateBookAvailableStatus(bookCodeToCheckout, false);
+                bookRepository.updateUserIdOfBooker(bookCodeToCheckout, loggedInUserId);
+            }
+
         }
     }
 

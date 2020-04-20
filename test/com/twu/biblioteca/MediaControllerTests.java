@@ -45,12 +45,13 @@ public class MediaControllerTests {
     @Test
     public void checkoutBook_WhenCalled_ChangeBookAvailableStatusToFalse(){
         ArrayList<Book> availableBooks = mediaController.getAvailableBooks();
+        int loggedInUser = 0;
         int listSize = availableBooks.size();
         int randomBookCodeToCheckout = random.nextInt(listSize);
 
         Book currentBook = availableBooks.get(randomBookCodeToCheckout);
 
-        mediaController.checkingOutBook(currentBook.getId());
+        mediaController.checkingOutBook(currentBook.getId(), loggedInUser);
 
         assertThat(availableBooks.get(randomBookCodeToCheckout).getAvailable(), is(equalTo(false)));
     }
