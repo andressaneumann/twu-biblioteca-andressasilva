@@ -39,7 +39,7 @@ public class MenuControllerTests {
 
     @Test
     public void checkingIfMenuInputIsValid_WhenWrongAnswer_ReturnsFalse(){
-        Boolean response = menuController.checkingIfMenuInputIsValid(8);
+        Boolean response = menuController.checkingIfMenuInputIsValid(12);
 
         assertThat(response, is(equalTo(false)));
     }
@@ -139,28 +139,6 @@ public class MenuControllerTests {
         User user = menuController.gettingUserInformationFromId(userId);
 
         assertThat(user, is(equalTo(null)));
-    }
-
-    @Test
-    public void listMessage_WhenAnEmptyBookListIsSend_ReturnsNothingToShow(){
-        ArrayList<Book> emptyList = new ArrayList<Book>();
-        String messageAction = "books:";
-        String expectedOutput = "List of books:\nNothing to show. List empty!";
-
-        String realOutput = menuController.listMessage(emptyList, Book.class, messageAction, true);
-
-        assertThat(expectedOutput, is(equalTo(realOutput)));
-    }
-
-    @Test
-    public void listMessage_WhenAnEmptyMovieListIsSend_ReturnsNothingToShow(){
-        ArrayList<Movie> emptyList = new ArrayList<Movie>();
-        String messageAction = "movies:";
-        String expectedOutput = "List of movies:\nNothing to show. List empty!";
-
-        String realOutput = menuController.listMessage(emptyList, Movie.class, messageAction, true);
-
-        assertThat(expectedOutput, is(equalTo(realOutput)));
     }
 
     @Test
@@ -267,8 +245,8 @@ public class MenuControllerTests {
         Boolean isUseLoggedIn = true;
 
         String menuOptions = menuController.returnStringOfMenuOptions(isUseLoggedIn);
-        String expectedMenuOptions = "1. Login\n2. List of Books\n3. Checkout a Book\n" +
-                "4. Return a Book\n5. List of Movies\n6. Checkout a Movie\n7. Exit program\n";
+        String expectedMenuOptions = "1. Login\n2. See my profile\n3. List of Books\n4. Checkout a Book\n5. Return a Book\n" +
+                "6. List of Movies\n7. Checkout a Movie\n8. Who checked out each book\n9. Exit program\n";
 
         assertThat(menuOptions, is(equalTo(expectedMenuOptions)));
     }
@@ -278,7 +256,8 @@ public class MenuControllerTests {
         Boolean isUseLoggedIn = false;
 
         String menuOptions = menuController.returnStringOfMenuOptions(isUseLoggedIn);
-        String expectedMenuOptions = "\nIn order to checkout and return books you need to be logged in!\n1. Login\n2. List of Books\n5. List of Movies\n6. Checkout a Movie\n7. Exit program\n";
+        String expectedMenuOptions = "\nIn order to checkout and return books you need to be logged in!\n1. Login\n" +
+                "3. List of Books\n6. List of Movies\n7. Checkout a Movie\n9. Exit program\n";
 
         assertThat(menuOptions, is(equalTo(expectedMenuOptions)));
     }

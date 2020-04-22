@@ -41,7 +41,7 @@ public class MenuController {
         Option returnABook = new Option(5, "5. Return a Book", true);
         Option movieList = new Option(6, "6. List of Movies", false);
         Option checkoutAMovie = new Option(7,"7. Checkout a Movie", false);
-        Option checkWhoCheckedOutEachBook = new Option(8, "8. Who checked out each book", false);
+        Option checkWhoCheckedOutEachBook = new Option(8, "8. Who checked out each book", true);
 
         Option exit = new Option(9, "9. Exit program", false);
 
@@ -274,7 +274,7 @@ public class MenuController {
                 System.exit(0);
                 break;
             default:
-                System.out.println(GettingErrorMessageWhenInvalidOptionChosen());
+                System.out.println(gettingErrorMessageWhenInvalidOptionChosen());
         }
     }
 
@@ -374,13 +374,15 @@ public class MenuController {
 
                 if(isAvailable){
                     for (Book book : booksToCheckout) {
-                        listOfMedia += ("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased() + "\n");
+                        listOfMedia += ("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor()
+                                + " | Publication Year: " + book.getYearReleased() + "\n");
                     }
                     break;
                 }
 
                 for (Book book : checkedOutBooks) {
-                    listOfMedia += ("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor() + " | Publication Year: " + book.getYearReleased() + "\n");
+                    listOfMedia += ("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: "
+                            + book.getAuthor() + " | Publication Year: " + book.getYearReleased() + "\n");
                 }
             break;
 
@@ -388,12 +390,14 @@ public class MenuController {
 
                 if(isAvailable){
                     for(Movie movie : moviesToCheckout)
-                        listOfMedia += ("Movie Code: " + movie.getId() + " | Name: " + movie.getName() + " | Director: " + movie.getDirector() + " | Rating: " + movie.getRating() + "\n");
+                        listOfMedia += ("Movie Code: " + movie.getId() + " | Name: " + movie.getName() + " | Director: "
+                                + movie.getDirector() + " | Rating: " + movie.getRating() + "\n");
                     break;
                 }
 
                 for(Movie movie : checkedOutMovies)
-                    listOfMedia += ("Movie Code: " + movie.getId() + " | Name: " + movie.getName() + " | Director: " + movie.getDirector() + " | Rating: " + movie.getRating() + "\n");
+                    listOfMedia += ("Movie Code: " + movie.getId() + " | Name: " + movie.getName() + " | Director: "
+                            + movie.getDirector() + " | Rating: " + movie.getRating() + "\n");
 
             break;
         }
@@ -402,7 +406,7 @@ public class MenuController {
 
     }
 
-    public String GettingErrorMessageWhenInvalidOptionChosen() {
+    public String gettingErrorMessageWhenInvalidOptionChosen() {
         return "\n-- You need to choose between the available options, please try again! --\n";
     }
 }
