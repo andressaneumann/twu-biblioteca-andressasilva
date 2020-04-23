@@ -35,7 +35,7 @@ public class BookRepository {
     public void updateBookAvailableStatus(int id, Boolean status){
         for(Book book : books){
             if(book.getId() == id)
-                book.setAvailable(status);
+                book.setAvailableToBook(status);
         }
     }
 

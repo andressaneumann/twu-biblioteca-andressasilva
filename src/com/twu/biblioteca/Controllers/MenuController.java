@@ -1,11 +1,8 @@
 package com.twu.biblioteca.Controllers;
 
 import com.twu.biblioteca.Models.*;
-import com.twu.biblioteca.Repositories.BookRepository;
 import com.twu.biblioteca.Repositories.UserRepository;
 
-import java.lang.reflect.Array;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -22,39 +19,55 @@ public class MenuController {
     ArrayList<Movie> moviesToCheckout = mediaController.getAvailableMovies();
     ArrayList<Movie> checkedOutMovies = mediaController.getCheckedOutMovies();
 
+    //Booleans
     Boolean isUserLoggedIn = false;
-    int loggedInUserId;
-    User currentUserLoggedIn;
     Boolean programIsRunning = true;
     Boolean isAnswerValid = false;
     Scanner in = new Scanner(System.in);
 
-    public MenuController() {
-        instantiateOptions();
-    }
+    //ints
+    int loggedInUserId;
 
-    public void instantiateOptions(){
-        Option login = new Option(1, "1. Login", false);
-        Option seeMyProfile = new Option(2, "2. See my profile", true);
-        Option booksList = new Option(3, "3. List of Books", false);
-        Option checkoutBook = new Option(4, "4. Checkout a Book", true);
-        Option returnABook = new Option(5, "5. Return a Book", true);
-        Option movieList = new Option(6, "6. List of Movies", false);
-        Option checkoutAMovie = new Option(7,"7. Checkout a Movie", false);
-        Option checkWhoCheckedOutEachBook = new Option(8, "8. Who checked out each book", true);
+    //Strings
+    String processOutput = "";
 
-        Option exit = new Option(9, "9. Exit program", false);
+    public ArrayList<Option> instantiateOptions(Boolean isUserLoggedIn){
+        Option login = new Option(1, "Login", false);
+        Option seeMyProfile = new Option(2, "See my profile", true);
+        Option booksList = new Option(3, "List of Books", false);
+        Option checkoutBook = new Option(4, "Checkout a Book", true);
+        Option returnABook = new Option(5, "Return a Book", true);
+        Option movieList = new Option(6, "List of Movies", false);
+        Option checkoutAMovie = new Option(7,"Checkout a Movie", false);
+        Option checkWhoCheckedOutEachBook = new Option(8, "Who checked out each book", true);
+        Option exit = new Option(9, "Exit program", false);
 
+        if(isUserLoggedIn){
+            availableOptions.clear();
+
+            availableOptions.add(seeMyProfile);
+            availableOptions.add(booksList);
+            availableOptions.add(checkoutBook);
+            availableOptions.add(returnABook);
+            availableOptions.add(movieList);
+            availableOptions.add(checkoutAMovie);
+            availableOptions.add(checkWhoCheckedOutEachBook);
+            availableOptions.add(exit);
+
+            return availableOptions;
+        }
 
         availableOptions.add(login);
-        availableOptions.add(seeMyProfile);
         availableOptions.add(booksList);
-        availableOptions.add(checkoutBook);
-        availableOptions.add(returnABook);
         availableOptions.add(movieList);
         availableOptions.add(checkoutAMovie);
-        availableOptions.add(checkWhoCheckedOutEachBook);
         availableOptions.add(exit);
+
+        return availableOptions;
+    }
+
+    public MenuController() {
+        availableOptions = instantiateOptions(isUserLoggedIn);
     }
 
     public void main() {
@@ -63,8 +76,7 @@ public class MenuController {
             updatingLists();
             System.out.println("\nPlease choose between the available options and press the respective number: ");
 
-            String menuOptions = returnStringOfMenuOptions(isUserLoggedIn);
-            System.out.println(menuOptions);
+            printMenuOptions(availableOptions);
             int userAnswer = readingIntegerOutput();
             isAnswerValid = checkingIfMenuInputIsValid(userAnswer);
 
@@ -73,24 +85,10 @@ public class MenuController {
         }
     }
 
-    public String returnStringOfMenuOptions(Boolean isUserLoggedIn){
-        String menuOptions = "";
+    public void printMenuOptions(ArrayList<Option> availableOptions) {
 
-        if(isUserLoggedIn){
-            for (int i = 0; i < availableOptions.size(); i++)
-                menuOptions += availableOptions.get(i).getName() + "\n";
-
-            return menuOptions;
-        }
-
-        menuOptions += "\nIn order to checkout and return books you need to be logged in!\n";
-
-        for(int i = 0; i<availableOptions.size(); i++){
-            if(availableOptions.get(i).getUserNeedsToBeLoggedInToAccessOption().equals(false))
-                menuOptions += availableOptions.get(i).getName() + "\n";
-        }
-
-        return menuOptions;
+        for (int i = 0; i < availableOptions.size(); i++)
+            System.out.println(i+1 + ". " + availableOptions.get(i).getName());
     }
 
     public int readingIntegerOutput(){
@@ -104,178 +102,180 @@ public class MenuController {
     }
 
     public Boolean checkingIfMenuInputIsValid(int userAnswer) {
-
         Boolean optionFound = false;
 
-        for(Option option : availableOptions){
-            if(option.getId() == userAnswer)
-               optionFound = true;
+        for(int i = 1; i <= availableOptions.size(); i++) {
+            if (i == userAnswer)
+                optionFound = true;
         }
 
         return optionFound;
     }
 
-    public Boolean checkingIfMediaCodeIsValid(int mediaCode, Boolean isAvailable, Class<?> tClass) {
-        Boolean codeFound = false;
+    public Boolean checkingIfMediaCodeIsValid(int mediaCode, Boolean isAvailableToBook, Class<?> tClass){
 
-        int mediaTypeFlag = flaggingMediaType(tClass);
+        String mediaType = returnMediaType(tClass);
 
-        switch (mediaTypeFlag){
-            case 0:
-                if(isAvailable){
+        switch (mediaType){
+            case "Book":
+                if(isAvailableToBook){
                     for(Book book : booksToCheckout){
                         if(book.getId() == mediaCode)
-                            codeFound = true;
+                            return true;
                     }
-                    return codeFound;
                 }
 
                 for(Book book : checkedOutBooks){
                     if(book.getId() == mediaCode)
-                        codeFound = true;
+                        return true;
                 }
                 break;
 
-            case 1:
-                if(isAvailable){
+            case "Movie":
+
+                if(isAvailableToBook){
                     for(Movie movie : moviesToCheckout){
                         if(movie.getId() == mediaCode)
-                            codeFound = true;
+                            return true;
                     }
                 }
 
                 for(Movie movie : checkedOutMovies){
                     if(movie.getId() == mediaCode)
-                        codeFound = true;
+                        return true;
                 }
                 break;
         }
 
-        return codeFound;
+        return false;
+    }
+
+    public String returnMediaType(Class<?> tClass) {
+        if(tClass.equals(Book.class))
+            return "Book";
+
+        return "Movie";
+    }
+
+    public Option currentOptionSelected(int answer){
+
+        for(int i = 1; i <= availableOptions.size(); i++){
+            if(i == answer)
+                return availableOptions.get(i-1);
+        }
+        return null;
     }
 
     public void userAction(int answer){
-        Boolean isListEmpty;
+        Option currentOptionSelected = currentOptionSelected(answer);
 
-        String messageAction = "";
-        String messageToPrint = "";
-        String processOutput = "";
+        switch (currentOptionSelected.getName()){
+            case "Login":
+                Boolean loginProcess = loginProcess();
 
-        switch (answer){
-            case 1:
-                loggedInUserId = loginController.main();
-
-                if(loggedInUserId >= 0){
-                    isUserLoggedIn = true;
+                if(loginProcess){
                     System.out.println("User logged in!");
                     break;
                 }
 
                 System.out.println("Login failed.");
                 break;
-            case 2:
-                User currentUser = gettingUserInformationFromId(loggedInUserId);
-
-                System.out.println("My profile: \n");
-                System.out.println("Name: " + currentUser.getName());
-                System.out.println("Email: " + currentUser.getEmail());
-                System.out.println("Phone number: " + currentUser.getPhoneNumber());
-
+            case "See my profile":
+                printProfileInformation();
                 break;
-            case 3:
-                isListEmpty = checkingIfListIsEmpty(booksToCheckout);
-
-                if(!isListEmpty){
-                    messageAction = "books:";
-                    messageToPrint = listMessage(booksToCheckout, Book.class, messageAction, true);
-
-                    System.out.println(messageToPrint);
-                    break;
-                }
-                System.out.println("Nothing to show, list is empty!");
+            case "List of Books":
+                processOutput = generatingStringListOfMedia(booksToCheckout, Book.class, true, "books:");
+                System.out.println(processOutput);
                 break;
-            case 4:
-                isListEmpty = checkingIfListIsEmpty(booksToCheckout);
+            case "Checkout a Book":
+                processOutput = generatingStringListOfMedia(booksToCheckout, Book.class, true, "books to checkout:");
+                System.out.println(processOutput);
 
-                if(!isListEmpty){
-                    messageAction = "books to checkout: ";
-                    messageToPrint = listMessage(booksToCheckout, Book.class, messageAction, true);
-                    System.out.println(messageToPrint);
-
+                if(booksToCheckout.size() > 0){
                     System.out.println("Please select the book code correspondent to the book you want to checkout:");
                     int bookCodeToCheckout = readingIntegerOutput();
 
-                    processOutput = checkoutProcess(bookCodeToCheckout, Book.class);
-                    System.out.println(processOutput);
-
-                    break;
+                    String checkoutBooks = checkoutProcess(bookCodeToCheckout, Book.class);
+                    System.out.println(checkoutBooks);
                 }
-                System.out.println("Nothing to show, list is empty!");
                 break;
-            case 5:
-                isListEmpty = checkingIfListIsEmpty(checkedOutBooks);
+            case "Return a Book":
+                processOutput = generatingStringListOfMedia(checkedOutBooks, Book.class, false, "checked out books:");
+                System.out.println(processOutput);
 
-                if(!isListEmpty){
-                    messageAction = "current checked out books: ";
-                    messageToPrint = listMessage(checkedOutBooks, Book.class, messageAction, false);
-                    System.out.println(messageToPrint);
-
+                if(checkedOutBooks.size() > 0){
                     System.out.println("\nPlease inform the code of the book you want to return: ");
                     int bookCodeToReturn = readingIntegerOutput();
 
-                    processOutput = returningBookProcess(bookCodeToReturn);
-                    System.out.println(processOutput);
-                    break;
+                    String returningBookOutput = returningBookProcess(bookCodeToReturn);
+                    System.out.println(returningBookOutput);
                 }
-                System.out.println("Nothing to show, list is empty!");
                 break;
 
-            case 6:
-                isListEmpty = checkingIfListIsEmpty(moviesToCheckout);
-
-                if(!isListEmpty){
-                    messageAction = "movies:";
-                    messageToPrint = listMessage(moviesToCheckout, Movie.class, messageAction, true);
-
-                    System.out.println(messageToPrint);
-                    break;
-                }
-                System.out.println("Nothing to show, list is empty!");
+            case "List of Movies":
+                processOutput = generatingStringListOfMedia(moviesToCheckout, Movie.class,true, "movies:");
+                System.out.println(processOutput);
                 break;
 
-            case 7:
-                isListEmpty = checkingIfListIsEmpty(moviesToCheckout);
+            case "Checkout a Movie":
+                processOutput = generatingStringListOfMedia(moviesToCheckout, Movie.class,true, "movies to checkout:");
+                System.out.println(processOutput);
 
-                if(!isListEmpty){
-                    messageAction = "movies to checkout: ";
-                    messageToPrint = listMessage(moviesToCheckout, Movie.class, messageAction, true);
-                    System.out.println(messageToPrint);
-
+                if(checkedOutMovies.size()>0){
                     System.out.println("Please select the movie code correspondent to the movie you want to checkout:");
                     int movieCodeToCheckout = readingIntegerOutput();
 
                     processOutput = checkoutProcess(movieCodeToCheckout, Movie.class);
                     System.out.println(processOutput);
-                    break;
-                }
-                System.out.println("Nothing to show, list is empty!");
-                break;
-            case 8:
-
-                System.out.println("Books booked and the person who has each one:");
-                for(Book book : checkedOutBooks){
-                    System.out.println("Book code: " + book.getId() + " | Book title: " + book.getTitle() + " | Booker: " + gettingUserInformationFromId(book.getUserIdOfBooker()).getName());
                 }
                 break;
 
-            case 9:
+            case "Who checked out each book":
+                printBooksAndUsersThatBookedEachOne();
+                break;
+
+            case "Exit program":
                 programIsRunning = false;
                 System.out.println("Exiting the program...");
                 System.exit(0);
                 break;
+
             default:
                 System.out.println(gettingErrorMessageWhenInvalidOptionChosen());
         }
+    }
+
+    public Boolean loginProcess(){
+
+        loggedInUserId = loginController.main();
+
+        if(loggedInUserId >= 0){
+            isUserLoggedIn = true;
+            instantiateOptions(isUserLoggedIn);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    public void printProfileInformation(){
+        User currentUser = gettingUserInformationFromId(loggedInUserId);
+
+        System.out.println("My profile: \n");
+        System.out.println("Name: " + currentUser.getName());
+        System.out.println("Email: " + currentUser.getEmail());
+        System.out.println("Phone number: " + currentUser.getPhoneNumber());
+    }
+
+    public String generatingStringListOfMedia(ArrayList<?> mediaList, Class<?> tClass, Boolean isAvailableToBook, String messageAction){
+        if(!mediaList.isEmpty()){
+            String message = "List of " + messageAction + "\n";
+
+            return message + checkingListTypeAndReturningRespectiveData(isAvailableToBook, tClass);
+        }
+
+        return "Nothing to show, list is empty!";
     }
 
     public User gettingUserInformationFromId(int id){
@@ -290,6 +290,18 @@ public class MenuController {
         return null;
     }
 
+    public void printBooksAndUsersThatBookedEachOne(){
+        System.out.println("Books booked and the person who has each one:");
+
+        if(checkedOutBooks.size()>0){
+            for(Book book : checkedOutBooks){
+                System.out.println("Book code: " + book.getId() + " | Book title: " + book.getTitle() + " | Booker: " + gettingUserInformationFromId(book.getUserIdOfBooker()).getName());
+            }
+        } else{
+            System.out.println("No books currently booked.");
+        }
+    }
+
     public ArrayList<?> castingListType(ArrayList<?> list, Class<?> tClass){
         if(tClass == Movie.class){
             list = (ArrayList<Book>) list;
@@ -300,20 +312,6 @@ public class MenuController {
         return list;
     }
 
-    public int flaggingMediaType(Class<?> tClass){
-        if(tClass.equals(Book.class))
-            return 0;
-
-        return 1;
-    }
-
-    public String listMessage(ArrayList<?> list, Class<?> tClass, String messageAction, Boolean isAvailable){
-        list = castingListType(list, tClass);
-        String message = "List of " + messageAction + "\n";
-
-        return message + returnListOfMedia(isAvailable, tClass);
-    }
-
     public void updatingLists(){
         booksToCheckout = mediaController.getAvailableBooks();
         checkedOutBooks = mediaController.getCheckedOutBooks();
@@ -322,32 +320,32 @@ public class MenuController {
     }
 
     public String checkoutProcess(int mediaCodeToCheckout, Class<?> tClass){
-        String output = "";
+        Boolean isMediaCheckedOut = false;
         Boolean isMediaAvailable = checkingIfMediaCodeIsValid(mediaCodeToCheckout, true, tClass);
 
-        int mediaTypeFlag = flaggingMediaType(tClass);
+        String mediaType = returnMediaType(tClass);
 
-        switch (mediaTypeFlag){
-            case 0:
-                if(isMediaAvailable){
-                    mediaController.checkingOutBook(mediaCodeToCheckout, loggedInUserId);
-                    output = "Thank you! Enjoy the book!";
-                    break;
-                }
-                output =  "Sorry, that book is not available!";
-                break;
+        switch (mediaType){
+            case "Book":
+                if(isMediaAvailable)
+                    isMediaCheckedOut = mediaController.checkingOutBook(mediaCodeToCheckout, loggedInUserId);
 
-            case 1:
-                if(isMediaAvailable){
-                    mediaController.checkingOutMovie(mediaCodeToCheckout);
-                    output = "Thank you! Enjoy the movie!";
-                    break;
-                }
-                output =  "Sorry, that movie is not available!";
-                break;
+                if(isMediaCheckedOut)
+                    return "Thank you! Enjoy the book!";
+
+                return "Sorry, that book is not available!";
+
+            case "Movie":
+                if(isMediaAvailable)
+                    isMediaCheckedOut = mediaController.checkingOutMovie(mediaCodeToCheckout);
+
+                if(isMediaCheckedOut)
+                    return "Thank you! Enjoy the movie!";
+
+                return "Sorry, that movie is not available!";
         }
 
-        return output;
+        return "";
     }
 
     public String returningBookProcess(int bookCodeToReturn){
@@ -357,22 +355,19 @@ public class MenuController {
             mediaController.returningBook(bookCodeToReturn);
             return "Thank you for returning the book!";
         }
+
         return "That is not a valid book to return.";
     }
 
-    public Boolean checkingIfListIsEmpty(ArrayList<?> list){
-        return list.isEmpty();
-    }
-
-    public String returnListOfMedia(Boolean isAvailable, Class<?> tClass){
+    public String checkingListTypeAndReturningRespectiveData(Boolean isAvailableToBook, Class<?> tClass){
         String listOfMedia = "";
 
-        int mediaTypeFlag = flaggingMediaType(tClass);
+        String mediaType = returnMediaType(tClass);
 
-        switch (mediaTypeFlag){
-            case 0:
+        switch (mediaType){
+            case "Book":
 
-                if(isAvailable){
+                if(isAvailableToBook){
                     for (Book book : booksToCheckout) {
                         listOfMedia += ("Book Code: " + book.getId() + " | " + "Title: " + book.getTitle() + " | Author: " + book.getAuthor()
                                 + " | Publication Year: " + book.getYearReleased() + "\n");
@@ -386,24 +381,31 @@ public class MenuController {
                 }
             break;
 
-            case 1:
+            case "Movie":
 
-                if(isAvailable){
+                if(isAvailableToBook){
                     for(Movie movie : moviesToCheckout)
                         listOfMedia += ("Movie Code: " + movie.getId() + " | Name: " + movie.getName() + " | Director: "
-                                + movie.getDirector() + " | Rating: " + movie.getRating() + "\n");
+                                + movie.getDirector() + " | Rating: " + checkMovieRating(movie.getRating()) + "\n");
                     break;
                 }
 
                 for(Movie movie : checkedOutMovies)
                     listOfMedia += ("Movie Code: " + movie.getId() + " | Name: " + movie.getName() + " | Director: "
-                            + movie.getDirector() + " | Rating: " + movie.getRating() + "\n");
+                            + movie.getDirector() + " | Rating: " + checkMovieRating(movie.getRating()) + "\n");
 
             break;
         }
 
         return listOfMedia;
 
+    }
+
+    public String checkMovieRating(Integer rating){
+        if(rating == null)
+            return "Unrated";
+
+        return rating.toString();
     }
 
     public String gettingErrorMessageWhenInvalidOptionChosen() {

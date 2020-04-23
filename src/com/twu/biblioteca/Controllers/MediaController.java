@@ -27,7 +27,7 @@ public class MediaController {
         ArrayList<Book> availableBooks = new ArrayList<Book>();
 
         for (int i = 0; i < books.size(); i++){
-            if(books.get(i).getAvailable().equals(true))
+            if(books.get(i).getAvailableToBook().equals(true))
                 availableBooks.add(books.get(i));
         }
 
@@ -38,7 +38,7 @@ public class MediaController {
         ArrayList<Movie> availableMovies = new ArrayList<Movie>();
 
         for (int i = 0; i < movies.size(); i++){
-            if(movies.get(i).getAvailable().equals(true))
+            if(movies.get(i).getAvailableToBook().equals(true))
                 availableMovies.add(movies.get(i));
         }
 
@@ -49,7 +49,7 @@ public class MediaController {
         ArrayList<Book> checkedOutBooks = new ArrayList<Book>();
 
         for (int i = 0; i < books.size(); i++){
-            if(books.get(i).getAvailable().equals(false))
+            if(books.get(i).getAvailableToBook().equals(false))
                 checkedOutBooks.add(books.get(i));
         }
 
@@ -60,7 +60,7 @@ public class MediaController {
         ArrayList<Movie> checkedOutMovies = new ArrayList<Movie>();
 
         for (int i = 0; i < movies.size(); i++){
-            if(movies.get(i).getAvailable().equals(false))
+            if(movies.get(i).getAvailableToBook().equals(false))
                 checkedOutMovies.add(movies.get(i));
         }
 
@@ -68,15 +68,17 @@ public class MediaController {
     }
 
 
-    public void checkingOutBook(int bookCodeToCheckout, Integer loggedInUserId) {
+    public Boolean checkingOutBook(int bookCodeToCheckout, Integer loggedInUserId) {
 
         for(int i = 0; i < books.size(); i++){
-            if(books.get(i).getId() == bookCodeToCheckout){
+            if(books.get(i).getId() == bookCodeToCheckout && books.get(i).getAvailableToBook() == true){
                 bookRepository.updateBookAvailableStatus(bookCodeToCheckout, false);
                 bookRepository.updateUserIdOfBooker(bookCodeToCheckout, loggedInUserId);
-            }
 
+                return true;
+            }
         }
+        return false;
     }
 
     public void returningBook(int checkedOutBookCode) {
@@ -86,12 +88,16 @@ public class MediaController {
         }
     }
 
-    public void checkingOutMovie(int movieCodeToCheckout) {
+    public Boolean checkingOutMovie(int movieCodeToCheckout) {
 
         for(int i = 0; i < movies.size(); i++){
-            if(movies.get(i).getId() == movieCodeToCheckout)
+            if(movies.get(i).getId() == movieCodeToCheckout && movies.get(i).getAvailableToBook() == true) {
                 movieRepository.updateMovieAvailableStatus(movieCodeToCheckout, false);
+                return true;
+            }
         }
+
+        return false;
     }
 
 }

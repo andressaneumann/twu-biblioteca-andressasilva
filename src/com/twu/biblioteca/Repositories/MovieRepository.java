@@ -20,8 +20,8 @@ public class MovieRepository {
         Movie fightClub = new Movie(0, "Fight Club", "David Fincher", 10, true);
         Movie inception = new Movie(1, "Inception", "Christopher Nolan", 10, true);
         Movie pulpFiction = new Movie(2, "Pulp Fiction", "Quentin Tarantino", 10, true);
-        Movie avatar = new Movie(3, "Avatar", "James Cameron", 7, true);
-        Movie toyStory = new Movie(4, "Toy Story", "John Lasseter", 0, false);
+        Movie avatar = new Movie(3, "Avatar", "James Cameron", null, true);
+        Movie toyStory = new Movie(4, "Toy Story", "John Lasseter", 6, false);
 
         movies.add(fightClub);
         movies.add(inception);
@@ -36,7 +36,7 @@ public class MovieRepository {
 
         for (Movie movie : movies) {
             if (movie.getId() == id)
-                movie.setAvailable(status);
+                movie.setAvailableToBook(status);
         }
     }
 

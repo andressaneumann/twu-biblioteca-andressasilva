@@ -5,15 +5,15 @@ public class Movie {
     private int id;
     private String name;
     private String director;
-    private int rating;
-    private Boolean isAvailable;
+    private Integer rating;
+    private Boolean isAvailableToBook;
 
-    public Movie(int id, String name, String director, int rating, Boolean isAvailable) {
+    public Movie(int id, String name, String director, Integer rating, Boolean isAvailableToBook) {
         this.id = id;
         this.name = name;
         this.director = director;
         this.rating = rating;
-        this.isAvailable = isAvailable;
+        this.isAvailableToBook = isAvailableToBook;
     }
 
     public int getId() {
@@ -40,19 +40,19 @@ public class Movie {
         this.director = director;
     }
 
-    public int getRating() {
+    public Integer getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(Integer rating) {
         this.rating = rating;
     }
 
-    public Boolean getAvailable() {
-        return isAvailable;
+    public Boolean getAvailableToBook() {
+        return isAvailableToBook;
     }
 
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
+    public void setAvailableToBook(Boolean availableToBook) {
+        isAvailableToBook = availableToBook;
     }
 }

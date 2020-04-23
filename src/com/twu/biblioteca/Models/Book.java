@@ -6,15 +6,15 @@ public class Book {
     private String title;
     private String author;
     private int yearReleased;
-    private Boolean isAvailable;
+    private Boolean isAvailableToBook;
     private Integer userIdOfBooker;
 
-    public Book(int id, String title, String author, int yearReleased, Boolean isAvailable, Integer userIdOfBooker) {
+    public Book(int id, String title, String author, int yearReleased, Boolean isAvailableToBook, Integer userIdOfBooker) {
         this.id = id;
         this.title = title;
         this.author = author;
         this.yearReleased = yearReleased;
-        this.isAvailable = isAvailable;
+        this.isAvailableToBook = isAvailableToBook;
         this.userIdOfBooker = userIdOfBooker;
     }
 
@@ -50,12 +50,12 @@ public class Book {
         this.yearReleased = yearReleased;
     }
 
-    public Boolean getAvailable() {
-        return isAvailable;
+    public Boolean getAvailableToBook() {
+        return isAvailableToBook;
     }
 
-    public void setAvailable(Boolean available) {
-        isAvailable = available;
+    public void setAvailableToBook(Boolean available) {
+        isAvailableToBook = available;
     }
 
     public Integer getUserIdOfBooker() {

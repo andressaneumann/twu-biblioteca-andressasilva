@@ -39,7 +39,7 @@ public class MediaControllerTests {
     public void availableBooks_WhenCalled_ReturnAvailableBooks(){
         ArrayList<Book> availableBooks = mediaController.getAvailableBooks();
 
-        assertThat(availableBooks.get(0).getAvailable(), is(equalTo(true)));
+        assertThat(availableBooks.get(0).getAvailableToBook(), is(equalTo(true)));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class MediaControllerTests {
 
         mediaController.checkingOutBook(currentBook.getId(), loggedInUser);
 
-        assertThat(availableBooks.get(randomBookCodeToCheckout).getAvailable(), is(equalTo(false)));
+        assertThat(availableBooks.get(randomBookCodeToCheckout).getAvailableToBook(), is(equalTo(false)));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class MediaControllerTests {
 
         mediaController.returningBook(currentBook.getId());
 
-        assertThat(checkedOutBooks.get(randomCheckedOutBookCode).getAvailable(), is(equalTo(true)));
+        assertThat(checkedOutBooks.get(randomCheckedOutBookCode).getAvailableToBook(), is(equalTo(true)));
     }
 
 }

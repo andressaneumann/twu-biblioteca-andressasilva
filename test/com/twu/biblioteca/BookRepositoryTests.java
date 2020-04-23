@@ -40,19 +40,18 @@ public class BookRepositoryTests {
         ArrayList<Book> books = bookRepository.getBooks();
         bookRepository.updateBookAvailableStatus(bookCodeToBeUpdated, newStatus);
 
-        assertThat(books.get(bookCodeToBeUpdated).getAvailable(), is(equalTo(false)));
+        assertThat(books.get(bookCodeToBeUpdated).getAvailableToBook(), is(equalTo(false)));
     }
 
     @Test
     public void updateBookAvailableStatus_FromFalseToTrue_ReturnsTrue(){
         int bookCodeToBeUpdated = 4;
-        int loggedInUser = 0;
         Boolean newStatus = true;
 
         ArrayList<Book> books = bookRepository.getBooks();
         bookRepository.updateBookAvailableStatus(bookCodeToBeUpdated, newStatus);
 
-        assertThat(books.get(bookCodeToBeUpdated).getAvailable(), is(equalTo(true)));
+        assertThat(books.get(bookCodeToBeUpdated).getAvailableToBook(), is(equalTo(true)));
     }
 
 }

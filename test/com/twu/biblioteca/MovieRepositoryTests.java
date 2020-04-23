@@ -40,7 +40,7 @@ public class MovieRepositoryTests {
         ArrayList<Movie> movies = movieRepository.getMovies();
         movieRepository.updateMovieAvailableStatus(movieCodeToBeUpdated, newStatus);
 
-        assertThat(movies.get(movieCodeToBeUpdated).getAvailable(), is(equalTo(false)));
+        assertThat(movies.get(movieCodeToBeUpdated).getAvailableToBook(), is(equalTo(false)));
     }
 
     @Test
@@ -51,6 +51,6 @@ public class MovieRepositoryTests {
         ArrayList<Movie> movies = movieRepository.getMovies();
         movieRepository.updateMovieAvailableStatus(movieCodeToBeUpdated, newStatus);
 
-        assertThat(movies.get(movieCodeToBeUpdated).getAvailable(), is(equalTo(true)));
+        assertThat(movies.get(movieCodeToBeUpdated).getAvailableToBook(), is(equalTo(true)));
     }
 }
